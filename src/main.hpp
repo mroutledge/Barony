@@ -36,58 +36,58 @@
 #include <vector>
 
 #ifndef WINDOWS
-	#include <unistd.h>
+#include <unistd.h>
 #endif
 #include <string.h>
 #include <ctype.h>
 #ifdef WINDOWS
-	#define GL_GLEXT_PROTOTYPES
-	#include <windows.h>
-	#undef min
-	#undef max
+#define GL_GLEXT_PROTOTYPES
+#include <windows.h>
+#undef min
+#undef max
 #endif
 #ifdef APPLE
-	#include <Cocoa/Cocoa.h>
-	//#include <OpenGL/OpenGL.h>
-	#define GL_GLEXT_PROTOTYPES
-	#include <GLUT/glut.h>
-	#include <OpenGL/gl3ext.h>
-	#include <OpenGL/gl3.h>
-	#include <SDL2/SDL_opengl.h>
+#include <Cocoa/Cocoa.h>
+//#include <OpenGL/OpenGL.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GLUT/glut.h>
+#include <OpenGL/gl3ext.h>
+#include <OpenGL/gl3.h>
+#include <SDL2/SDL_opengl.h>
 #else
-	#define GL_GLEXT_PROTOTYPES
-	#include <GL/gl.h>
-	#include <GL/glu.h>
-    #include <GL/glext.h>
-    #include "SDL_opengl.h"
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glext.h>
+#include "SDL_opengl.h"
 #endif
 #ifdef APPLE
-    #include <SDL2/SDL.h>
+#include <SDL2/SDL.h>
 #else
-    #include "SDL.h"
+#include "SDL.h"
 #endif
 #ifdef WINDOWS
 #include "SDL_syswm.h"
 #endif
 #ifdef APPLE
-    #include <SDL2_image/SDL_image.h>
+#include <SDL2_image/SDL_image.h>
 #else
-    #include "SDL_image.h"
+#include "SDL_image.h"
 #endif
 //#include "SDL_mixer.h"
 #ifdef APPLE
-    #include <SDL2_net/SDL_net.h>
+#include <SDL2_net/SDL_net.h>
 #else
-    #include <SDL_net.h>
+#include <SDL_net.h>
 #endif
 #ifdef APPLE
-    #include <SDL2_ttf/SDL_ttf.h>
+#include <SDL2_ttf/SDL_ttf.h>
 #else
-    #include "SDL_ttf.h"
+#include "SDL_ttf.h"
 #endif
 //#include "sprig.h"
 #include "savepng.hpp"
-	
+
 #ifndef APPLE
 #define FALSE false
 #define TRUE true
@@ -99,16 +99,16 @@
 #endif
 
 #ifdef _MSC_VER
-	#include <io.h>
-	#define F_OK 0	// check for existence 
-	#define X_OK 1	// check for execute permission 
-	#define W_OK 2	// check for write permission 
-	#define R_OK 4	// check for read permission
+#include <io.h>
+#define F_OK 0	// check for existence 
+#define X_OK 1	// check for execute permission 
+#define W_OK 2	// check for write permission 
+#define R_OK 4	// check for read permission
 
-	#if _MSC_VER != 1900 //Don't need this if running visual studio 2015.
-		#define snprintf _snprintf
-	#endif
-	#define access _access
+#if _MSC_VER != 1900 //Don't need this if running visual studio 2015.
+#define snprintf _snprintf
+#endif
+#define access _access
 #endif
 
 #define PI 3.14159265358979323846
@@ -189,7 +189,7 @@ typedef struct node_t {
 	struct node_t *prev;
 	struct list_t *list;
 	void *element;
-	void (*deconstructor)(void *data);
+	void(*deconstructor)(void *data);
 	Uint32 size;
 } node_t;
 
@@ -219,7 +219,7 @@ typedef struct light_t {
 	Sint32 radius;
 	Sint32 intensity;
 	Sint32 *tiles;
-	
+
 	// a pointer to the light's location in a list
 	node_t *node;
 } light_t;
@@ -261,11 +261,11 @@ typedef struct button_t {
 	SDL_Keycode key;     // key shortcut to activate button
 	bool pressed;        // whether the button is being pressed or not
 	bool needclick;      // involved in triggering buttons
-	
+
 	// a pointer to the button's location in a list
 	node_t *node;
-	
-	void (*action)(struct button_t *my);
+
+	void(*action)(struct button_t *my);
 } button_t;
 
 // voxel structure
@@ -494,7 +494,7 @@ void listDeconstructor(void *data);
 Entity *newEntity(Sint32 sprite, Uint32 pos, list_t *entlist);
 button_t *newButton(void);
 light_t *newLight(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity);
-string_t *newString(list_t *list, Uint32 color, char *content,...);
+string_t *newString(list_t *list, Uint32 color, char *content, ...);
 pathnode_t *newPathnode(list_t *list, Sint32 x, Sint32 y, pathnode_t *parent, Sint8 pos);
 
 // function prototypes for draw.c:
@@ -530,15 +530,15 @@ void drawEditormap(long camx, long camy);
 void drawWindow(int x1, int y1, int x2, int y2);
 void drawDepressed(int x1, int y1, int x2, int y2);
 void drawWindowFancy(int x1, int y1, int x2, int y2);
-SDL_Rect ttfPrintTextColor( TTF_Font *font, int x, int y, Uint32 color, bool outline, const char *str );
-SDL_Rect ttfPrintText( TTF_Font *font, int x, int y, const char *str );
-SDL_Rect ttfPrintTextFormattedColor( TTF_Font *font, int x, int y, Uint32 color, char *fmt, ... );
-SDL_Rect ttfPrintTextFormatted( TTF_Font *font, int x, int y, char *fmt, ... );
-void printTextFormatted( SDL_Surface *font_bmp, int x, int y, char *fmt, ... );
+SDL_Rect ttfPrintTextColor(TTF_Font *font, int x, int y, Uint32 color, bool outline, const char *str);
+SDL_Rect ttfPrintText(TTF_Font *font, int x, int y, const char *str);
+SDL_Rect ttfPrintTextFormattedColor(TTF_Font *font, int x, int y, Uint32 color, char *fmt, ...);
+SDL_Rect ttfPrintTextFormatted(TTF_Font *font, int x, int y, char *fmt, ...);
+void printTextFormatted(SDL_Surface *font_bmp, int x, int y, char *fmt, ...);
 void printTextFormattedAlpha(SDL_Surface *font_bmp, int x, int y, Uint8 alpha, char *fmt, ...);
 void printTextFormattedColor(SDL_Surface *font_bmp, int x, int y, Uint32 color, char *fmt, ...);
 void printTextFormattedFancy(SDL_Surface *font_bmp, int x, int y, Uint32 color, double angle, double scale, char *fmt, ...);
-void printText( SDL_Surface *font_bmp, int x, int y, char *str );
+void printText(SDL_Surface *font_bmp, int x, int y, char *str);
 void drawSprite(view_t *camera, Entity *entity);
 void drawTooltip(SDL_Rect *src);
 

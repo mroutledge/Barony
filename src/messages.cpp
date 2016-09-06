@@ -29,7 +29,7 @@ void removeLastMessage() {
 }
 
 void messageDeconstructor(void *data) {
-	if(data != NULL) {
+	if (data != NULL) {
 		Message *message = (Message *)data;
 		stringDeconstructor((void *)message->text);
 		free(data);
@@ -45,16 +45,17 @@ void addMessage(Uint32 color, char *content, ...) {
 		va_list argptr;
 		int c, i;
 		char str[1024] = { 0 };
-	
+
 		if (content != NULL) {
 			va_start(argptr, content);
-			i=vsnprintf(str,1023,content,argptr);
+			i = vsnprintf(str, 1023, content, argptr);
 			va_end(argptr);
-			for (c=0; c<i; c++) {
-				if (str[c]==10 || c == i - 1) //Line feed
+			for (c = 0; c < i; c++) {
+				if (str[c] == 10 || c == i - 1) //Line feed
 					lines_needed++;
 			}
-		} else {
+		}
+		else {
 			lines_needed = 0;
 		}
 	}
@@ -65,12 +66,12 @@ void addMessage(Uint32 color, char *content, ...) {
 	int line_count = 0;
 	if (notification_messages.first) {
 		node = notification_messages.first;
-		Message *current = (Message* )node->element;
+		Message *current = (Message*)node->element;
 		line_count += current->text->lines;
 
 		while (node->next) {
 			node = node->next;
-			current = (Message* )node->element;
+			current = (Message*)node->element;
 			line_count += current->text->lines;
 		}
 	}
@@ -83,19 +84,20 @@ void addMessage(Uint32 color, char *content, ...) {
 				node = node->next;
 			}
 			//TODO: Instead of just removing it, check to see if it's multiline. If it is, check to see if removing some of its lines, not the entire thing, will give enough space. If so, do that, rather than outright deleting the entire thing.
-			Message *last = (Message* )node->element;
+			Message *last = (Message*)node->element;
 			line_count -= last->text->lines;
 			removeLastMessage(); //Remove last message, cause there's too many!
 		}
-	} else {
-		printlog( "Error, MESSAGE_MAX_TOTAL_LINES is too small (must be 1 or greater!)\n"); //Something done broke.
+	}
+	else {
+		printlog("Error, MESSAGE_MAX_TOTAL_LINES is too small (must be 1 or greater!)\n"); //Something done broke.
 		exit(1);
 	}
 
 	//Allocate the new message.
 	Message *new_message = NULL;
-	if ((new_message = (Message *) malloc(sizeof(Message))) == NULL) {
-		printlog( "failed to allocate memory for new message!\n"); //Yell at the user.
+	if ((new_message = (Message *)malloc(sizeof(Message))) == NULL) {
+		printlog("failed to allocate memory for new message!\n"); //Yell at the user.
 		exit(1);
 	}
 	//Assign the message's text.
@@ -104,29 +106,29 @@ void addMessage(Uint32 color, char *content, ...) {
 		int c, i;
 		char str[1024] = { 0 };
 
-		if ((new_message->text = (string_t *) malloc(sizeof(string_t)))==NULL) {
-			printlog( "[addMessage()] Failed to allocate memory for new string!\n" );
+		if ((new_message->text = (string_t *)malloc(sizeof(string_t))) == NULL) {
+			printlog("[addMessage()] Failed to allocate memory for new string!\n");
 			exit(1); //Should it do this?
 		}
-	
-		new_message->text->color=color;
-		new_message->text->lines=1;
+
+		new_message->text->color = color;
+		new_message->text->lines = 1;
 		if (content != NULL) {
 			//Format the content.
 			va_start(argptr, content);
-			i=vsnprintf(str,1023,content,argptr);
+			i = vsnprintf(str, 1023, content, argptr);
 			va_end(argptr);
-			new_message->text->data = (char *) malloc(sizeof(char)*(i+1));
+			new_message->text->data = (char *)malloc(sizeof(char)*(i + 1));
 			if (new_message->text->data == NULL) {
-				printlog( "Failed to allocate memory for new message's text!\n"); //Yell at user.
+				printlog("Failed to allocate memory for new message's text!\n"); //Yell at user.
 				exit(1);
 			}
-			memset(new_message->text->data, 0, sizeof(char)*(i+1));
-			for (c=0; c<i; ++c) {
-				if (str[c]==10) //Line feed
+			memset(new_message->text->data, 0, sizeof(char)*(i + 1));
+			for (c = 0; c < i; ++c) {
+				if (str[c] == 10) //Line feed
 					new_message->text->lines++;
 			}
-			strncpy(new_message->text->data,str,i);
+			strncpy(new_message->text->data, str, i);
 
 			//Make sure we don't exceed the maximum number of lines permissible.
 			if (line_count + new_message->text->lines > MESSAGE_MAX_TOTAL_LINES) {
@@ -136,9 +138,9 @@ void addMessage(Uint32 color, char *content, ...) {
 						if (str[c] == 10) { //Line feed
 							new_message->text->lines--; //First let it know it's now one less line.
 							char *temp = new_message->text->data; //Point to the message's text so we don't lose it.
-							new_message->text->data = (char *) malloc(sizeof(char)*((i + 1) - c)); //Give the message itself new text.
+							new_message->text->data = (char *)malloc(sizeof(char)*((i + 1) - c)); //Give the message itself new text.
 							if (new_message->text->data == NULL) { //Error checking.
-								printlog( "Failed to allocate memory for new message's text!\n"); //Yell at user.
+								printlog("Failed to allocate memory for new message's text!\n"); //Yell at user.
 								exit(1);
 							}
 							memmove(new_message->text->data, temp + (c - 1), strlen(temp)); //Now copy the text into the message's new allocated memory, sans the first line.
@@ -148,7 +150,8 @@ void addMessage(Uint32 color, char *content, ...) {
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			new_message->text->data = NULL;
 		}
 	}
@@ -174,7 +177,7 @@ void addMessage(Uint32 color, char *content, ...) {
 	while (node->next) {
 		count++;
 		node = node->next;
-		current = (Message* )node->element;
+		current = (Message*)node->element;
 		current->y = ((Message *)node->prev->element)->y - MESSAGE_FONT_SIZE * current->text->lines;
 	}
 }
@@ -192,28 +195,30 @@ void updateMessages() {
 	Message *current = NULL;
 
 	// limit the number of onscreen messages to reduce spam
-	int c=0;
+	int c = 0;
 	node_t *tempNode = notification_messages.last;
-	while( list_Size(&notification_messages)-c>10 ) {
+	while (list_Size(&notification_messages) - c > 10) {
 		current = (Message *)tempNode->element;
 		current->time_displayed = MESSAGE_PREFADE_TIME;
 		tempNode = tempNode->prev;
 		c++;
 	}
-	
-	for( node=notification_messages.first; node!=NULL; node=nextnode ) {
+
+	for (node = notification_messages.first; node != NULL; node = nextnode) {
 		nextnode = node->next;
-		current = (Message* )node->element;
+		current = (Message*)node->element;
 		if (current->time_displayed < MESSAGE_PREFADE_TIME) {
 			if (time_passed > 0) {
 				current->time_displayed += time_passed; // less time before fade
 			}
-		} else {
+		}
+		else {
 			if (current->alpha <= SDL_ALPHA_TRANSPARENT) {
 				list_RemoveNode(node); // transparent message, deleted message :)
-			} else {
+			}
+			else {
 				current->alpha -= MESSAGE_FADE_RATE; // fade message
-				if( current->alpha < 0 )
+				if (current->alpha < 0)
 					current->alpha = 0;
 			}
 		}
@@ -224,11 +229,11 @@ void drawMessages() {
 	node_t *node;
 	Message *current;
 
-	for( node=notification_messages.first; node!=NULL; node=node->next ) {
+	for (node = notification_messages.first; node != NULL; node = node->next) {
 		current = (Message*)node->element;
 
 		Uint32 color = current->text->color^mainsurface->format->Amask;
-		color += std::min<Sint16>(std::max<Sint16>(0,current->alpha),255)<<mainsurface->format->Ashift;
+		color += std::min<Sint16>(std::max<Sint16>(0, current->alpha), 255) << mainsurface->format->Ashift;
 		ttfPrintTextFormattedColor(MESSAGE_FONT, current->x, current->y, color, current->text->data);
 	}
 }

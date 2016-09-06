@@ -110,10 +110,10 @@ void actSwitch(Entity *my) {
 	//So then when that second switch's actSwitch() comes up, and if it's on, it'll repower the entire network -- which will stay powered until ALL connected switches go off.
 	my->flags[PASSABLE] = TRUE; // these should ALWAYS be passable. No exceptions
 
-	if( multiplayer!=CLIENT ) {
+	if (multiplayer != CLIENT) {
 		int i = 0;
 		for (i = 0; i < MAXPLAYERS; ++i) {
-			if ( (i==0 && selectedEntity==my) || (client_selected[i]==my) ) {
+			if ((i == 0 && selectedEntity == my) || (client_selected[i] == my)) {
 				if (inrange[i]) { //Act on it only if the player (or monster, if/when this is changed to support monster interaction?) is in range.
 					messagePlayer(i, language[1110]);
 					playSoundEntity(my, 56, 64);
@@ -127,22 +127,26 @@ void actSwitch(Entity *my) {
 			my->switchUpdateNeighbors();
 			//TODO: Alternatively, instead of using CPU cycles on this, have the recursive network shutdown alert any switches connected to it that are powered on that it's shutting down, so that they can repower the network come next frame.
 		}
-	} else {
+	}
+	else {
 		my->flags[NOUPDATE] = TRUE;
 	}
-	
+
 	// Rotate the switch when it is on/off.
-	if( my->skill[0] ) {
-		if( my->roll > -PI/4 ) {
-			my->roll -= std::max((my->roll+PI/4)/2,.05);
-		} else {
-			my->roll = -PI/4;
+	if (my->skill[0]) {
+		if (my->roll > -PI / 4) {
+			my->roll -= std::max((my->roll + PI / 4) / 2, .05);
 		}
-	} else {
-		if( my->roll < PI/4 ) {
-			my->roll += std::max(-(my->roll-PI/4)/2,.05);
-		} else {
-			my->roll = PI/4;
+		else {
+			my->roll = -PI / 4;
+		}
+	}
+	else {
+		if (my->roll < PI / 4) {
+			my->roll += std::max(-(my->roll - PI / 4) / 2, .05);
+		}
+		else {
+			my->roll = PI / 4;
 		}
 	}
 
@@ -168,25 +172,25 @@ void actTrap(Entity *my) {
 	Entity *entity;
 	bool somebodyonme = FALSE;
 	my->flags[PASSABLE] = TRUE; // these should ALWAYS be passable. No exceptions
-	
-	if( TRAP_ON ) {
+
+	if (TRAP_ON) {
 		my->switchUpdateNeighbors();
 	}
-	
-	for( node=map.entities->first; node!=NULL; node=node->next ) {
+
+	for (node = map.entities->first; node != NULL; node = node->next) {
 		entity = (Entity *)node->element;
-		if( entity->behavior == &actPlayer || entity->behavior == &actItem || entity->behavior == &actMonster || entity->behavior == &actBoulder ) {
-			if( floor(entity->x/16) == floor(my->x/16) && floor(entity->y/16) == floor(my->y/16) ) {
+		if (entity->behavior == &actPlayer || entity->behavior == &actItem || entity->behavior == &actMonster || entity->behavior == &actBoulder) {
+			if (floor(entity->x / 16) == floor(my->x / 16) && floor(entity->y / 16) == floor(my->y / 16)) {
 				somebodyonme = TRUE;
-				if( !TRAP_ON ) {
+				if (!TRAP_ON) {
 					my->toggleSwitch();
 					TRAP_ON = 1;
 				}
 			}
 		}
 	}
-	if( !somebodyonme ) {
-		if( TRAP_ON ) {
+	if (!somebodyonme) {
+		if (TRAP_ON) {
 			my->toggleSwitch();
 			TRAP_ON = 0;
 		}
@@ -201,24 +205,25 @@ void actTrapPermanent(Entity *my) {
 	Entity *entity;
 	my->flags[PASSABLE] = TRUE; // these should ALWAYS be passable. No exceptions
 
-	if( !strcmp(map.name,"Boss") ) {
-		for( node=map.entities->first; node!=NULL; node=node->next ) {
+	if (!strcmp(map.name, "Boss")) {
+		for (node = map.entities->first; node != NULL; node = node->next) {
 			entity = (Entity *)node->element;
-			if( entity->behavior==&actPlayer ) {
-				if( entity->x < 26*16 || entity->y < 6*16 || entity->y >= 26*16 ) { // hardcoded, I know...
+			if (entity->behavior == &actPlayer) {
+				if (entity->x < 26 * 16 || entity->y < 6 * 16 || entity->y >= 26 * 16) { // hardcoded, I know...
 					return;
 				}
 			}
 		}
 	}
-	
-	if( TRAPPERMANENT_ON ) {
+
+	if (TRAPPERMANENT_ON) {
 		my->switchUpdateNeighbors();
-	} else {
-		for( node=map.entities->first; node!=NULL; node=node->next ) {
+	}
+	else {
+		for (node = map.entities->first; node != NULL; node = node->next) {
 			entity = (Entity *)node->element;
-			if( entity->behavior == &actPlayer || entity->behavior == &actItem || entity->behavior == &actMonster || entity->behavior == &actBoulder ) {
-				if( floor(entity->x/16) == floor(my->x/16) && floor(entity->y/16) == floor(my->y/16) ) {
+			if (entity->behavior == &actPlayer || entity->behavior == &actItem || entity->behavior == &actMonster || entity->behavior == &actBoulder) {
+				if (floor(entity->x / 16) == floor(my->x / 16) && floor(entity->y / 16) == floor(my->y / 16)) {
 					my->toggleSwitch();
 					TRAPPERMANENT_ON = 1;
 				}
@@ -299,12 +304,12 @@ void getPowerablesOnTile(int x, int y, list_t **list) {
 	//Loop through the list of entities.
 	for (node = entities->first; node != NULL; node = node->next) {
 		if (node->element) {
-			Entity *entity = (Entity *) node->element;
+			Entity *entity = (Entity *)node->element;
 			//Check if the entity is powerable.
 			if (entity && entity->skill[28]) { //If skill 28 = 0, the entity is not a powerable.
 				//If this is the first powerable found, the list needs to be created.
 				if (!(*list)) {
-					*list = (list_t *) malloc(sizeof(list_t));
+					*list = (list_t *)malloc(sizeof(list_t));
 					(*list)->first = NULL;
 					(*list)->last = NULL;
 				}

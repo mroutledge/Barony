@@ -29,8 +29,8 @@ list_t *discoveredbooks = NULL;
 
 int getBook(char *booktitle) {
 	int c;
-	for( c=0; c<numbooks; c++ ) {
-		if( !strcmp(booktitle,books[c]->name) )
+	for (c = 0; c < numbooks; c++) {
+		if (!strcmp(booktitle, books[c]->name))
 			return c;
 	}
 	return 0;
@@ -50,31 +50,32 @@ void createBooks() {
 		if (discoveredbooks->first && discoveredbooks->last) {
 			// allocate memory for books
 			numbooks = list_Size(discoveredbooks);
-			books = (book_t **) malloc(sizeof(book_t *) * numbooks); //Allocate memory for all of the books.
-			
+			books = (book_t **)malloc(sizeof(book_t *) * numbooks); //Allocate memory for all of the books.
+
 			// sort books alphabetically (bubblesort)
 			do {
 				unsorted = FALSE;
-				for(node = discoveredbooks->first; node != NULL; node = node->next) {
-					if( node->next != NULL ) {
+				for (node = discoveredbooks->first; node != NULL; node = node->next) {
+					if (node->next != NULL) {
 						string_t *firststring = (string_t *)node->element;
 						string_t *secondstring = (string_t *)node->next->element;
-						if( strcmp(firststring->data, secondstring->data)>0 ) {
+						if (strcmp(firststring->data, secondstring->data) > 0) {
 							unsorted = TRUE;
 							node->element = secondstring;
 							node->next->element = firststring;
 							firststring->node = node->next;
 							secondstring->node = node;
 						}
-					} else {
+					}
+					else {
 						break;
 					}
 				}
-			} while( unsorted );
-			
+			} while (unsorted);
+
 			// create books
-			for(node = discoveredbooks->first, i = 0; node != NULL; node = node->next, ++i) {
-				books[i] = (book_t *) malloc(sizeof(book_t));
+			for (node = discoveredbooks->first, i = 0; node != NULL; node = node->next, ++i) {
+				books[i] = (book_t *)malloc(sizeof(book_t));
 				books[i]->text = NULL;
 				name = (string_t *)node->element;
 				books[i]->name = name->data;
@@ -85,10 +86,11 @@ void createBooks() {
 				books[i]->pages.last = NULL;
 				//formatTitle(books[i]);
 				createBook(books[i]);
-				books[i]->name[strlen(books[i]->name)-4] = 0;
+				books[i]->name[strlen(books[i]->name) - 4] = 0;
 			}
-		} else {
-			printlog( "Warning: discoveredbooks->first and last do not exist. No books in /books/ directory?\n");
+		}
+		else {
+			printlog("Warning: discoveredbooks->first and last do not exist. No books in /books/ directory?\n");
 		}
 	}
 }
@@ -97,60 +99,60 @@ void createBooks() {
 
 bool isLetter(char character) {
 	switch (tolower(character)) {
-		case 'a':
-			return TRUE;
-		case 'b':
-			return TRUE;
-		case 'c':
-			return TRUE;
-		case 'd':
-			return TRUE;
-		case 'e':
-			return TRUE;
-		case 'f':
-			return TRUE;
-		case 'g':
-			return TRUE;
-		case 'h':
-			return TRUE;
-		case 'i':
-			return TRUE;
-		case 'j':
-			return TRUE;
-		case 'k':
-			return TRUE;
-		case 'l':
-			return TRUE;
-		case 'm':
-			return TRUE;
-		case 'n':
-			return TRUE;
-		case 'o':
-			return TRUE;
-		case 'p':
-			return TRUE;
-		case 'q':
-			return TRUE;
-		case 'r':
-			return TRUE;
-		case 's':
-			return TRUE;
-		case 't':
-			return TRUE;
-		case 'u':
-			return TRUE;
-		case 'v':
-			return TRUE;
-		case 'w':
-			return TRUE;
-		case 'x':
-			return TRUE;
-		case 'y':
-			return TRUE;
-		case 'z':
-			return TRUE;
-		default:
-			return FALSE;
+	case 'a':
+		return TRUE;
+	case 'b':
+		return TRUE;
+	case 'c':
+		return TRUE;
+	case 'd':
+		return TRUE;
+	case 'e':
+		return TRUE;
+	case 'f':
+		return TRUE;
+	case 'g':
+		return TRUE;
+	case 'h':
+		return TRUE;
+	case 'i':
+		return TRUE;
+	case 'j':
+		return TRUE;
+	case 'k':
+		return TRUE;
+	case 'l':
+		return TRUE;
+	case 'm':
+		return TRUE;
+	case 'n':
+		return TRUE;
+	case 'o':
+		return TRUE;
+	case 'p':
+		return TRUE;
+	case 'q':
+		return TRUE;
+	case 'r':
+		return TRUE;
+	case 's':
+		return TRUE;
+	case 't':
+		return TRUE;
+	case 'u':
+		return TRUE;
+	case 'v':
+		return TRUE;
+	case 'w':
+		return TRUE;
+	case 'x':
+		return TRUE;
+	case 'y':
+		return TRUE;
+	case 'z':
+		return TRUE;
+	default:
+		return FALSE;
 	}
 	return FALSE;
 }
@@ -166,12 +168,12 @@ bool isCharacterPartOfWord(char *text, int index) {
 		return TRUE; //It's a character. Return true because no use continuing this function.
 
 	switch (text[index]) {
-		case '\'':
-			if (isLetter(text[index - 1]) && isLetter(text[index + 1])) //An apostrophe needs to be surrounded by letters to qualify as part of a word.
-				return TRUE;
-			return FALSE;
-		default:
-			return FALSE;
+	case '\'':
+		if (isLetter(text[index - 1]) && isLetter(text[index + 1])) //An apostrophe needs to be surrounded by letters to qualify as part of a word.
+			return TRUE;
+		return FALSE;
+	default:
+		return FALSE;
 	}
 
 	return FALSE;
@@ -210,7 +212,7 @@ int lengthOfCurrentWord(char *text, int index) {
 	else if (i > 0 && isCharacterPartOfWord(text, i)) //Not at the start of the text array and the previous character is a letter...yikes, not at the start of the word.
 		i = moveToStartOfWord(text, i); //Move to the start of the current word.
 
-	for(; i < strlen(text); ++i) {
+	for (; i < strlen(text); ++i) {
 		if (isCharacterPartOfWord(text, i))
 			length++; //The current character is part of the word.
 		else
@@ -223,13 +225,13 @@ int lengthOfCurrentWord(char *text, int index) {
 void createBook(book_t *book) {
 	if (!book)
 		return;
-		
+
 	//Load in the text from a file.
 	strcpy(tempstr, "books/");
 	strcat(tempstr, book->name);
 	book->text = readFile(tempstr);
 	if (!book->text) {
-		printlog( "error opening book \"%s\".\n", tempstr);
+		printlog("error opening book \"%s\".\n", tempstr);
 		return; //Failed to open the file.
 	}
 
@@ -239,10 +241,10 @@ void createBook(book_t *book) {
 
 	book->pages.first = NULL; book->pages.last = NULL;
 
-	Uint32 color = SDL_MapRGBA(mainsurface->format,0,0,0,255);
-	string_t *string = newString(&book->pages,color,NULL);
-	string->data = (char *) malloc(sizeof(char)*(max_characters+1));
-	memset(string->data,0,sizeof(char)*(max_characters+1));
+	Uint32 color = SDL_MapRGBA(mainsurface->format, 0, 0, 0, 255);
+	string_t *string = newString(&book->pages, color, NULL);
+	string->data = (char *)malloc(sizeof(char)*(max_characters + 1));
+	memset(string->data, 0, sizeof(char)*(max_characters + 1));
 
 	int i; // current character in the book's entire text
 	int p = 0; // current character in the page's text
@@ -251,7 +253,7 @@ void createBook(book_t *book) {
 	bool newline = FALSE;
 	bool can_write = TRUE; //If false, it means that the character write to page was interecepted by a - to properly break up a word.
 	int tab = 0; //Inserting tab characters.
-	char character_to_record  = ' ';
+	char character_to_record = ' ';
 	bool write_out = TRUE;
 	//found_word and word_length are used to prevent smaller words from being broken up. When the for loop detects that it has hit the start of a word, it queries for the word's length. If the word's length < MIN_LENGTH_TO_SPLIT_WORD, then it pumps out a newline and then starts the word. word_length_left is there so that it knows how many more characters it has to go through to reach the end of the word.
 	bool found_word = FALSE;
@@ -285,12 +287,13 @@ void createBook(book_t *book) {
 			x = 0; //Reset x since it's back to the beginning of the line.
 			if (y + 1 >= book_characterspace_y) {
 				//Create the next page. Do not record the character if it's a newline.
-				string = newString(&book->pages,color,NULL);
-				string->data = (char *) malloc(sizeof(char)*(max_characters+1));
-				memset(string->data,0,sizeof(char)*(max_characters+1));
+				string = newString(&book->pages, color, NULL);
+				string->data = (char *)malloc(sizeof(char)*(max_characters + 1));
+				memset(string->data, 0, sizeof(char)*(max_characters + 1));
 				p = 0;
 				y = 0;
-			} else {
+			}
+			else {
 				//Record the new line.
 				string->data[p] = '\n';
 				p++;
@@ -304,9 +307,10 @@ void createBook(book_t *book) {
 				tab = 0;
 			}
 			// no spaces at the start of a line
-			if( character_to_record==' ' )
+			if (character_to_record == ' ')
 				continue;
-		} else if (tab > 0) {
+		}
+		else if (tab > 0) {
 			character_to_record = ' ';
 		}
 
@@ -328,12 +332,13 @@ void createBook(book_t *book) {
 							x = 0; //Reset x, since it's writing out a new line and x gets reset when we do that.
 							if (y + 1 >= book_characterspace_y) { //Check if it hit the end of the page.
 								//It does indeed go off the page. Start a new page.
-								string = newString(&book->pages,color,NULL);
-								string->data = (char *) malloc(sizeof(char)*(max_characters+1));
-								memset(string->data,0,sizeof(char)*(max_characters+1));
+								string = newString(&book->pages, color, NULL);
+								string->data = (char *)malloc(sizeof(char)*(max_characters + 1));
+								memset(string->data, 0, sizeof(char)*(max_characters + 1));
 								p = 0;
 								y = 0;
-							} else {
+							}
+							else {
 								string->data[p] = '\n';
 								p++;
 								y++;
@@ -341,7 +346,8 @@ void createBook(book_t *book) {
 						}
 					}
 				}
-			} else if (found_word) {
+			}
+			else if (found_word) {
 				if (!isCharacterPartOfWord(book->text, i)) {
 					//Reached the end of the word.
 					found_word = FALSE;
@@ -358,8 +364,9 @@ void createBook(book_t *book) {
 						x++;
 						can_write = FALSE;
 						i--;
-					} else if (isCharacterPartOfWord(book->text, i + 1)) { //Okay, so the previous character is a space (or otherwise not constituting a word. Check if the next character is not a space (or the like)).
-						//Next character is not a space (and the like), write out a space so that the word's start is delayed until a safer point in time.
+					}
+					else if (isCharacterPartOfWord(book->text, i + 1)) { //Okay, so the previous character is a space (or otherwise not constituting a word. Check if the next character is not a space (or the like)).
+					 //Next character is not a space (and the like), write out a space so that the word's start is delayed until a safer point in time.
 						string->data[p] = ' ';
 						p++;
 						x++;
@@ -373,7 +380,8 @@ void createBook(book_t *book) {
 				(string->data)[p] = character_to_record;
 				p++;
 				x++;
-			} else {
+			}
+			else {
 				can_write = TRUE;
 			}
 

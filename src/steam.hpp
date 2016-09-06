@@ -68,30 +68,30 @@ void cpp_SteamServerClientWrapper_Destroy();
 void cpp_Free_CSteamID(void *steamID);
 
 //TODO: Ugh. Bugger these, replace with directly accessing the relevant stuff.
-extern void (*cpp_SteamServerWrapper_OnSteamServersConnected)(void *pLogonSuccess);
-extern void (*cpp_SteamServerWrapper_OnSteamServersConnectFailure)(void *pConnectFailure);
-extern void (*cpp_SteamServerWrapper_OnSteamServersDisconnected)(void *pLoggedOff);
-extern void (*cpp_SteamServerWrapper_OnPolicyResponse)(void *pPolicyResponse);
-extern void (*cpp_SteamServerWrapper_OnValidateAuthTicketResponse)(void *pResponse);
-extern void (*cpp_SteamServerWrapper_OnP2PSessionRequest)(void *p_Callback);
-extern void (*cpp_SteamServerWrapper_OnP2PSessionConnectFail)(void *pCallback);
+extern void(*cpp_SteamServerWrapper_OnSteamServersConnected)(void *pLogonSuccess);
+extern void(*cpp_SteamServerWrapper_OnSteamServersConnectFailure)(void *pConnectFailure);
+extern void(*cpp_SteamServerWrapper_OnSteamServersDisconnected)(void *pLoggedOff);
+extern void(*cpp_SteamServerWrapper_OnPolicyResponse)(void *pPolicyResponse);
+extern void(*cpp_SteamServerWrapper_OnValidateAuthTicketResponse)(void *pResponse);
+extern void(*cpp_SteamServerWrapper_OnP2PSessionRequest)(void *p_Callback);
+extern void(*cpp_SteamServerWrapper_OnP2PSessionConnectFail)(void *pCallback);
 
-extern void (*cpp_SteamServerClientWrapper_OnLobbyDataUpdate)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnLobbyGameCreated)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnGameJoinRequested)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnAvatarImageLoaded)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnSteamServersConnected)(void *callback);
-extern void (*cpp_SteamServerClientWrapper_OnSteamServersDisconnected)(void *callback);
-extern void (*cpp_SteamServerClientWrapper_OnSteamServerConnectFailure)(void *callback);
+extern void(*cpp_SteamServerClientWrapper_OnLobbyDataUpdate)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnLobbyGameCreated)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnGameJoinRequested)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnAvatarImageLoaded)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnSteamServersConnected)(void *callback);
+extern void(*cpp_SteamServerClientWrapper_OnSteamServersDisconnected)(void *callback);
+extern void(*cpp_SteamServerClientWrapper_OnSteamServerConnectFailure)(void *callback);
 //extern void (*cpp_SteamServerClientWrapper_OnGameOverlayActivated)(void *callback);
-extern void (*cpp_SteamServerClientWrapper_OnGameWebCallback)(void *callback);
-extern void (*cpp_SteamServerClientWrapper_OnWorkshopItemInstalled)(void *pParam);
-extern void (*cpp_SteamServerClientWrapper_OnP2PSessionConnectFail)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnP2PSessionRequest)(void *pCallback);
-extern void (*cpp_SteamServerClientWrapper_OnIPCFailure)(void *failure);
-extern void (*cpp_SteamServerClientWrapper_OnSteamShutdown)(void *callback);
-extern void (*cpp_SteamServerClientWrapper_OnLobbyCreated)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyCreated_t.
-extern void (*cpp_SteamServerClientWrapper_OnLobbyEntered)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyEnter_t.
-extern void (*cpp_SteamServerClientWrapper_OnLobbyMatchListCallback)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyMatchList_t.
-extern void (*cpp_SteamServerClientWrapper_OnRequestEncryptedAppTicket)(void *pEncryptedAppTicketResponse, bool bIOFailure); //Where pEncryptedAppTicketResponse is of type 
-extern void (*cpp_SteamServerClientWrapper_GameServerPingOnServerResponded)(void *steamID);
+extern void(*cpp_SteamServerClientWrapper_OnGameWebCallback)(void *callback);
+extern void(*cpp_SteamServerClientWrapper_OnWorkshopItemInstalled)(void *pParam);
+extern void(*cpp_SteamServerClientWrapper_OnP2PSessionConnectFail)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnP2PSessionRequest)(void *pCallback);
+extern void(*cpp_SteamServerClientWrapper_OnIPCFailure)(void *failure);
+extern void(*cpp_SteamServerClientWrapper_OnSteamShutdown)(void *callback);
+extern void(*cpp_SteamServerClientWrapper_OnLobbyCreated)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyCreated_t.
+extern void(*cpp_SteamServerClientWrapper_OnLobbyEntered)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyEnter_t.
+extern void(*cpp_SteamServerClientWrapper_OnLobbyMatchListCallback)(void *pCallback, bool bIOFailure); //Where pCallback is a pointer to type LobbyMatchList_t.
+extern void(*cpp_SteamServerClientWrapper_OnRequestEncryptedAppTicket)(void *pEncryptedAppTicketResponse, bool bIOFailure); //Where pEncryptedAppTicketResponse is of type 
+extern void(*cpp_SteamServerClientWrapper_GameServerPingOnServerResponded)(void *steamID);

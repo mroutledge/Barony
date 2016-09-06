@@ -96,26 +96,26 @@ typedef struct stat_t {
 	char name[128];
 	char obituary[128];
 	Uint32 poisonKiller; // uid of the entity which killed me via burning/poison
-	
+
 	// attributes
 	Sint32 HP, MAXHP, OLDHP;
 	Sint32 MP, MAXMP;
 	Sint32 STR, DEX, CON, INT, PER, CHR;
 	Sint32 EXP, LVL;
 	Sint32 GOLD, HUNGER;
-	
+
 	// skills and effects
 	Sint32 PROFICIENCIES[NUMPROFICIENCIES];
 	bool EFFECTS[NUMEFFECTS];
 	Sint32 EFFECTS_TIMERS[NUMEFFECTS];
 	bool defending;
-	
+
 	// group think
 	Uint32 leader_uid;
 	list_t FOLLOWERS;
 	int stache_x1, stache_x2;
 	int stache_y1, stache_y2;
-	
+
 	// equipment
 	list_t inventory;
 	Item *helmet;
@@ -128,7 +128,7 @@ typedef struct stat_t {
 	Item *amulet;
 	Item *ring;
 	Item *mask;
-	
+
 	// misc
 	FMOD_CHANNEL *monster_sound; //TODO: Do?
 	int monster_idlevar;

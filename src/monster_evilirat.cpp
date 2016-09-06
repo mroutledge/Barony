@@ -57,12 +57,12 @@ void initEvilRat(Entity *my, stat_t *myStats) {
 		if (!myStats->leader_uid)
 			myStats->leader_uid = 0;
 		myStats->FOLLOWERS.first = NULL; myStats->FOLLOWERS.last = NULL;
-		for (c = 0; c<std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
-			if (c<NUMPROFICIENCIES)
+		for (c = 0; c < std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
+			if (c < NUMPROFICIENCIES)
 				myStats->PROFICIENCIES[c] = 0;
-			if (c<NUMEFFECTS)
+			if (c < NUMEFFECTS)
 				myStats->EFFECTS[c] = FALSE;
-			if (c<NUMEFFECTS)
+			if (c < NUMEFFECTS)
 				myStats->EFFECTS_TIMERS[c] = 0;
 		}
 		myStats->helmet = NULL;
@@ -87,7 +87,7 @@ void initEvilRat(Entity *my, stat_t *myStats) {
 
 void evilratAnimate(Entity *my, double dist) {
 	// move legs
-	if ((ticks % 10 == 0 && dist>0.1) || (MONSTER_ATTACKTIME != MONSTER_ATTACK)) {
+	if ((ticks % 10 == 0 && dist > 0.1) || (MONSTER_ATTACKTIME != MONSTER_ATTACK)) {
 		MONSTER_ATTACKTIME = MONSTER_ATTACK;
 		if (my->sprite == 413) {
 			my->sprite = 414;
@@ -100,7 +100,7 @@ void evilratAnimate(Entity *my, double dist) {
 
 void evilratDie(Entity *my) {
 	int c = 0;
-	for (c = 0; c<5; c++) {
+	for (c = 0; c < 5; c++) {
 		Entity *gib = spawnGib(my);
 		serverSpawnGibForClient(gib);
 	}
