@@ -79,9 +79,9 @@ void sound_update() {
 	}
 
 	FMOD_VECTOR position, forward, up;
-	position.x = -camera.y;
-	position.y = -camera.z / 32;
-	position.z = -camera.x;
+	position.x = -(float)camera.y;
+	position.y = -(float)camera.z / 32;
+	position.z = -(float)camera.x;
 
 	/*double cosroll = cos(0);
 	double cosyaw = cos(camera.ang);
@@ -94,9 +94,9 @@ void sound_update() {
 	double ry = sinroll*cosyaw + cosroll*sinpitch*sinyaw;
 	double rz = cosroll*cospitch;*/
 
-	forward.x = 1 * sin(camera.ang);
+	forward.x = 1 * (float)sin(camera.ang);
 	forward.y = 0;
-	forward.z = 1 * cos(camera.ang);
+	forward.z = 1 * (float)cos(camera.ang);
 	/*forward.x = rx;
 	forward.y = ry;
 	forward.z = rz;*/

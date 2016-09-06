@@ -87,8 +87,8 @@ FMOD_CHANNEL* playSoundPos(double x, double y, Uint32 snd, int vol) {
 			if (client_disconnected[c] == TRUE)
 				continue;
 			strcpy((char *)net_packet->data, "SNDP");
-			SDLNet_Write32(x, &net_packet->data[4]);
-			SDLNet_Write32(y, &net_packet->data[8]);
+			SDLNet_Write32((Uint32)x, &net_packet->data[4]);
+			SDLNet_Write32((Uint32)y, &net_packet->data[8]);
 			SDLNet_Write32(snd, &net_packet->data[12]);
 			SDLNet_Write32((Uint32)vol, &net_packet->data[16]);
 			net_packet->address.host = net_clients[c - 1].host;
@@ -107,9 +107,9 @@ FMOD_CHANNEL* playSoundPos(double x, double y, Uint32 snd, int vol) {
 	}
 	FMOD_Channel_SetVolume(channel, vol / 128.f);
 	FMOD_VECTOR position;
-	position.x = -y / 16; //Left/right.
+	position.x = -(float)y / 16; //Left/right.
 	position.y = 0; //Up/down. //Should be z, but that's not passed. Ignore? Ignoring. Useful for sounds in the floor and ceiling though.
-	position.z = -x / 16; //Forward/backward.
+	position.z = -(float)x / 16; //Forward/backward.
 	FMOD_Channel_Set3DAttributes(channel, &position, NULL);
 	FMOD_Channel_SetChannelGroup(channel, sound_group);
 	FMOD_Channel_SetPaused(channel, FALSE);
@@ -144,9 +144,9 @@ FMOD_CHANNEL* playSoundPosLocal(double x, double y, Uint32 snd, int vol) {
 	}
 	FMOD_Channel_SetVolume(channel, vol / 128.f);
 	FMOD_VECTOR position;
-	position.x = -y / 16; //Left/right.
+	position.x = -(float)y / 16; //Left/right.
 	position.y = 0; //Up/down. //Should be z, but that's not passed. Ignore? Ignoring. Useful for sounds in the floor and ceiling though.
-	position.z = -x / 16; //Forward/backward.
+	position.z = -(float)x / 16; //Forward/backward.
 	FMOD_Channel_Set3DAttributes(channel, &position, NULL);
 	FMOD_Channel_SetChannelGroup(channel, sound_group);
 	FMOD_Channel_SetPaused(channel, FALSE);
@@ -297,8 +297,8 @@ void handleLevelMusic() {
 #endif
 	bool inshop = FALSE;
 	if (players[clientnum]) {
-		int x = (int)players[clientnum]->x / 16;
-		int y = (int)players[clientnum]->y / 16;
+		unsigned int x = (int)players[clientnum]->x / 16;
+		unsigned int y = (int)players[clientnum]->y / 16;
 		if (x >= 0 && x < map.width && y >= 0 && y < map.height)
 			if (shoparea[y + x*map.height])
 				inshop = TRUE;

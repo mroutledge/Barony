@@ -90,8 +90,8 @@ void glDrawVoxel(view_t *camera, Entity *entity, int mode) {
 	gluPerspective(fov, (double)camera->winw / (double)camera->winh, CLIPNEAR, CLIPFAR * 2);
 	glEnable(GL_DEPTH_TEST);
 	if (!entity->flags[OVERDRAW]) {
-		rotx = camera->vang * 180 / PI; // get x rotation
-		roty = (camera->ang - 3 * PI / 2) * 180 / PI; // get y rotation
+		rotx = (GLfloat)(camera->vang * 180 / PI); // get x rotation
+		roty = (GLfloat)((camera->ang - 3 * PI / 2) * 180 / PI); // get y rotation
 		rotz = 0; // get z rotation
 		glRotatef(rotx, 1, 0, 0); // rotate pitch
 		glRotatef(roty, 0, 1, 0); // rotate yaw
@@ -106,9 +106,9 @@ void glDrawVoxel(view_t *camera, Entity *entity, int mode) {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glPushMatrix();
-	rotx = entity->roll * 180 / PI; // get x rotation
-	roty = 360 - entity->yaw * 180 / PI; // get y rotation
-	rotz = 360 - entity->pitch * 180 / PI; // get z rotation
+	rotx = (GLfloat)(entity->roll * 180 / PI); // get x rotation
+	roty = (GLfloat)(360 - entity->yaw * 180 / PI); // get y rotation
+	rotz = (GLfloat)(360 - entity->pitch * 180 / PI); // get z rotation
 	glTranslatef(entity->x * 2, -entity->z * 2 - 1, entity->y * 2);
 	glRotatef(roty, 0, 1, 0); // rotate yaw
 	glRotatef(rotz, 0, 0, 1); // rotate pitch
@@ -554,11 +554,11 @@ void glDrawWorld(view_t *camera, int mode) {
 								glBegin(GL_QUADS);
 								if (z) {
 									s = getLightAt(x + 1, y + 1);
-									glColor3f(s, s, s);
+									glColor3f((GLfloat)s, (GLfloat)s, (GLfloat)s);
 									glTexCoord2f(0, 0); glVertex3f(x * 32 + 32, z * 32 - 16, y * 32 + 32);
 									glTexCoord2f(0, 1); glVertex3f(x * 32 + 32, z * 32 - 48, y * 32 + 32);
 									s = getLightAt(x + 1, y);
-									glColor3f(s, s, s);
+									glColor3f((GLfloat)s, (GLfloat)s, (GLfloat)s);
 									glTexCoord2f(1, 1); glVertex3f(x * 32 + 32, z * 32 - 48, y * 32 + 0);
 									glTexCoord2f(1, 0); glVertex3f(x * 32 + 32, z * 32 - 16, y * 32 + 0);
 								}
@@ -571,7 +571,7 @@ void glDrawWorld(view_t *camera, int mode) {
 									s = getLightAt(x + 1, y);
 									glColor3f(0, 0, 0);
 									glTexCoord2f(1, 2); glVertex3f(x * 32 + 32, z * 32 - 48 - 32, y * 32 + 0);
-									glColor3f(s, s, s);
+									glColor3f((GLfloat)s, (GLfloat)s, (GLfloat)s);
 									glTexCoord2f(1, 0); glVertex3f(x * 32 + 32, z * 32 - 16, y * 32 + 0);
 								}
 								glEnd();
@@ -582,7 +582,7 @@ void glDrawWorld(view_t *camera, int mode) {
 										s = std::min(std::max(0, lightmap[y + (x + 1)*map.height]), 255) / 255.0;
 									else
 										s = .5;
-									glColor3f(s, s, s);
+									glColor3f((GLfloat)s, (GLfloat)s, (GLfloat)s);
 								}
 								else {
 									glColor4ub(0, 0, 0, 0);

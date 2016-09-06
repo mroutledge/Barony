@@ -88,11 +88,6 @@
 //#include "sprig.h"
 #include "savepng.hpp"
 
-#ifndef APPLE
-#define FALSE false
-#define TRUE true
-#endif
-
 //Ifdef steam or something?
 #ifdef STEAMWORKS
 //#include <steamworks_cwrapper/steam_wrapper.h>
@@ -380,7 +375,6 @@ extern int minotaurlevel;
 extern char languageCode[32];
 extern char **language;
 extern std::map<std::string, std::string> monsterNames;
-extern std::map<std::string, std::string>;
 
 // random game defines
 extern bool movie;

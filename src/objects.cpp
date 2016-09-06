@@ -166,7 +166,7 @@ Entity *newEntity(Sint32 sprite, Uint32 pos, list_t *entlist) {
 	try {
 		entity = new Entity(sprite, pos, entlist);
 	}
-	catch (std::bad_alloc& ba) {
+	catch (std::bad_alloc&) {
 		printlog("failed to allocate memory for new entity!\n");
 		exit(1);
 	}

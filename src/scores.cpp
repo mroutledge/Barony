@@ -686,7 +686,7 @@ void loadAllScores() {
 		score->stats->stache_y2 = 0;
 
 		// inventory
-		int numitems = 0;
+		unsigned int numitems = 0;
 		fread(&numitems, sizeof(Uint32), 1, fp);
 		score->stats->inventory.first = NULL;
 		score->stats->inventory.last = NULL;
@@ -1123,7 +1123,7 @@ int saveGame() {
 		fwrite(&size, sizeof(Uint32), 1, fp);
 
 		// get followerStats
-		int i;
+		unsigned int i;
 		for (i = 0; i < size; i++) {
 			node_t *node = list_Node(&stats[c].FOLLOWERS, i);
 			if (node) {
@@ -1718,7 +1718,7 @@ list_t *loadGameFollowers() {
 		Uint32 numFollowers = 0;
 		fread(&numFollowers, sizeof(Uint32), 1, fp);
 
-		int i;
+		unsigned int i;
 		for (i = 0; i < numFollowers; i++) {
 			stat_t *followerStats = (stat_t *)malloc(sizeof(stat_t));
 			statConstructor(followerStats);

@@ -145,8 +145,6 @@ void actWinningPortal(Entity *my);
 void actFlame(Entity *my);
 void actCampfire(Entity *my);
 Entity *spawnFlame(Entity *parentent);
-void actMagic(Entity *my);
-Entity *castMagic(Entity *parentent);
 void actSprite(Entity *my);
 void actSleepZ(Entity *my);
 Entity *spawnBang(Sint16 x, Sint16 y, Sint16 z);
