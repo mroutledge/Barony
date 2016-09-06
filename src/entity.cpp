@@ -231,6 +231,9 @@ void Entity::killedByMonsterObituary(Entity *victim) {
 			case RAT:
 				victim->setObituary(language[1512]);
 				break;
+			case EVILRAT:
+				victim->setObituary(language[1940]);
+				break;
 			case GOBLIN:
 				victim->setObituary(language[1513]);
 				break;

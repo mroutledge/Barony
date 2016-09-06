@@ -15,6 +15,7 @@ static char monstertypename[][11] = {
 	"nothing",
 	"human",
 	"rat",
+	"evilrat",
 	"goblin",
 	"slime",
 	"troll",
@@ -73,6 +74,7 @@ static double damagetables[NUMMONSTERS][6] = {
 	{ 1.f, 1.f, 1.f, 1.f, 1.f, 1.f }, // nothing
 	{ 1.f, 1.f, 1.f, 1.f, 1.f, 1.f }, // human
 	{ 1.1, 1.1, 0.9, 0.9, 1.2, 1.f }, // rat
+	{ 1.1, 1.1, 0.9, 0.9, 1.2, 1.f }, // evil rat
 	{ 0.9, 1.f, 1.1, 1.1, 1.1, 1.f }, // goblin
 	{ 1.4, 0.5, 1.3, 0.7, 0.5, 1.3 }, // slime
 	{ 1.1, 0.8, 1.1, 0.8, 0.9, 1.f }, // troll
@@ -136,6 +138,7 @@ bool monsterMoveAside(Entity *my, Entity *entity);
 //--init* functions--
 void initHuman(Entity *my, stat_t *myStats);
 void initRat(Entity *my, stat_t *myStats);
+void initEvilRat(Entity *my, stat_t *myStats);
 void initGoblin(Entity *my, stat_t *myStats);
 void initSlime(Entity *my, stat_t *myStats);
 void initScorpion(Entity *my, stat_t *myStats);
@@ -172,6 +175,7 @@ void actDevilLimb(Entity *my);
 //--*Die functions--
 void humanDie(Entity *my);
 void ratDie(Entity *my);
+void evilratDie(Entity *my);
 void goblinDie(Entity *my);
 void slimeDie(Entity *my);
 void scorpionDie(Entity *my);
@@ -191,6 +195,7 @@ void devilDie(Entity *my);
 //--*MoveBodyparts functions--
 void humanMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void ratAnimate(Entity *my, double dist);
+void evilratAnimate(Entity *my, double dist);
 void goblinMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void slimeAnimate(Entity *my, double dist);
 void scorpionAnimate(Entity *my, double dist);

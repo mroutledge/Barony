@@ -13,6 +13,14 @@
 #include "hash.hpp"
 #include "entity.hpp"
 
+//rather than recompiling SDL2 and SDL2main, I'm putting a hack in for VS 2015
+FILE _iob[] = { *stdin, *stdout, *stderr };
+
+extern "C" FILE * __cdecl __iob_func(void)
+{
+	return _iob;
+}
+
 // main definitions
 Sint32 xres = 960;
 Sint32 yres = 600;
@@ -24,6 +32,7 @@ bool stop = FALSE;
 // language stuff
 char languageCode[32] = { 0 };
 char **language = NULL;
+std::map<std::string, std::string> monsterNames;
 
 // input stuff
 int reversemouse=0;

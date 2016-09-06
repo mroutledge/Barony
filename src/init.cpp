@@ -275,7 +275,7 @@ int initApp(char *title, int fullscreen) {
 		return 11;
 	}
 	models = (voxel_t **) malloc(sizeof(voxel_t *)*nummodels);
-	fp = fopen("models/models.txt","r");
+	fp = fopen("models/models.txt", "r");
 	for( c=0; !feof(fp); c++ ) {
 		fscanf(fp,"%s",name); while( fgetc(fp) != '\n' ) if( feof(fp) ) break;
 		models[c] = loadVoxel(name);
@@ -541,6 +541,8 @@ int loadLanguage(char *lang) {
 	// close file
 	fclose(fp);
 	printlog( "successfully loaded language file '%s'\n",filename);
+
+	monsterNames = mapFile("lang\en-monster-names.txt");
 	return 0;
 }
 

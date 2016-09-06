@@ -15,6 +15,11 @@
 #include "sound.hpp"
 #include "entity.hpp"
 
+#include <sstream>
+#include <fstream>
+
+
+
 /*-------------------------------------------------------------------------------
 
 	glLoadTexture
@@ -112,9 +117,10 @@ voxel_t *loadVoxel(char *filename2) {
 		model->sizey = 0; fread(&model->sizey,sizeof(Sint32),1,file);
 		model->sizez = 0; fread(&model->sizez,sizeof(Sint32),1,file);
 		model->data = (Uint8 *) malloc(sizeof(Uint8)*model->sizex*model->sizey*model->sizez);
-		memset(model->data,0,sizeof(Uint8)*model->sizex*model->sizey*model->sizez);
-		fread(model->data,sizeof(Uint8),model->sizex*model->sizey*model->sizez,file);
+		memset(model->data, 0, sizeof(Uint8)*model->sizex*model->sizey*model->sizez);
+		fread(model->data, sizeof(Uint8), model->sizex*model->sizey*model->sizez, file);
 		fread(&model->palette,sizeof(Uint8),256*3,file);
+		
 		int c;
 		for( c=0; c<256; c++ ) {
 			model->palette[c][0]=model->palette[c][0]<<2;
@@ -358,6 +364,69 @@ char *readFile(char *filename) {
 	}
 
 	return file_contents;
+}
+
+
+std::vector<std::string> split(std::string file, char delimiter)
+{
+	using namespace std;
+
+	vector<string> lines = {};
+	size_t startIndex = 0;
+	size_t index = startIndex;
+	vector<string>::iterator sit;
+	int counter = 0;
+
+	while (index < file.length())
+	{
+		if (file[index] == delimiter)
+		{
+			sit = lines.begin();
+			lines.insert(sit, file.substr(startIndex, counter));
+
+			startIndex = index + 1;
+			counter = 0;
+		}
+		else
+		{
+			counter++;
+		}
+		index++;
+	}
+
+	string lastEntry = file.substr(startIndex, counter);
+
+	if (lastEntry.length() > 0)
+	{
+		sit = lines.begin();
+		lines.insert(sit, file.substr(startIndex, counter));
+	}
+
+	return lines;
+}
+
+std::string readTextFile(char *filename) {
+	using namespace std;
+	string fname = filename;
+
+	ifstream fs(fname);
+	stringstream buffer;
+
+	buffer << fs.rdbuf();
+
+	return buffer.str();
+}
+
+std::map<std::string, std::string> mapFile(char *filepath){
+	using namespace std;
+	std::map<string, string> results = {};
+	for each(string line in split(readTextFile(filepath), '\n'))
+	{
+		vector<string> pair = split(line, ',');
+		results[pair[1]] = pair[0];
+	}
+
+	return results;
 }
 
 /*-------------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "fmod.h"
+#include <fmod.h>
 
 class Item;
 //enum Item;
@@ -22,6 +22,7 @@ typedef enum {
 	NOTHING,
 	HUMAN,
 	RAT,
+	EVILRAT,
 	GOBLIN,
 	SLIME,
 	TROLL,
@@ -41,7 +42,7 @@ typedef enum {
 	DEVIL,
 	SHOPKEEPER
 } Monster;
-#define NUMMONSTERS 21
+#define NUMMONSTERS 23
 extern int kills[NUMMONSTERS];
 
 // effects

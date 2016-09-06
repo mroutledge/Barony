@@ -38,23 +38,24 @@ int monsterCurve(int level) {
 			case 0:
 			case 1:
 			case 2:
-			case 3:
 				return RAT;
+			case 3:
 			case 4:
 			case 5:
+				return EVILRAT;
 			case 6:
 			case 7:
 				return SKELETON;
 			case 8:
-				if( level >= 2 )
+				if( level >= 3 )
 					return SPIDER;
 				else
-					return SKELETON;
+					return EVILRAT;
 			case 9:
-				if( level >= 2 )
+				if( level >= 3 )
 					return TROLL;
 				else
-					return SKELETON;
+					return EVILRAT;
 				break;
 		}
 	} else if( !strncmp(map.name,"The Swamp",9) ) { // the swamp
@@ -1459,6 +1460,11 @@ void assignActions(map_t *map) {
 						entity->focalx = limbs[RAT][0][0]; // 0
 						entity->focaly = limbs[RAT][0][1]; // 0
 						entity->focalz = limbs[RAT][0][2]; // 0
+						break;
+					case EVILRAT:
+						entity->focalx = limbs[EVILRAT][0][0]; // 0
+						entity->focaly = limbs[EVILRAT][0][1]; // 0
+						entity->focalz = limbs[EVILRAT][0][2]; // 0
 						break;
 					case SCORPION:
 						entity->focalx = limbs[SCORPION][0][0]; // 0

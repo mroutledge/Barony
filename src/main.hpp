@@ -32,6 +32,9 @@
 #include <math.h>
 #include <time.h>
 #include <fcntl.h>
+#include <map>
+#include <vector>
+
 #ifndef WINDOWS
 	#include <unistd.h>
 #endif
@@ -75,7 +78,7 @@
 #ifdef APPLE
     #include <SDL2_net/SDL_net.h>
 #else
-    #include "SDL_net.h"
+    #include <SDL_net.h>
 #endif
 #ifdef APPLE
     #include <SDL2_ttf/SDL_ttf.h>
@@ -376,6 +379,8 @@ extern int minotaurlevel;
 #define NUMLANGENTRIES 2000
 extern char languageCode[32];
 extern char **language;
+extern std::map<std::string, std::string> monsterNames;
+extern std::map<std::string, std::string>;
 
 // random game defines
 extern bool movie;
@@ -566,10 +571,14 @@ extern char *cursor_pencil[];
 extern char *cursor_brush[];
 extern char *cursor_fill[];
 
-GLuint create_shader(const char* filename, GLenum type);
+//GLuint create_shader(const char* filename, GLenum type);
+std::string readTextFile(char *filename);
+std::map<std::string, std::string> mapFile(char *filepath);
 
 char *readFile(char *filename);
+
 list_t *directoryContents(char *directory);
+std::vector<std::string> split(std::string file, char delimiter);
 
 extern bool no_sound; //False means sound initialized properly. True means sound failed to initialize.
 extern bool initialized; //So that messagePlayer doesn't explode before the game is initialized. //TODO: Does the editor need this set too and stuff?

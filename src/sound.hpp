@@ -15,7 +15,7 @@
 #define MUSIC
 
 #include <stdio.h>
-#include "fmod.h"
+#include <fmod.h>
 
 //Pointer to the FMOD system.
 extern FMOD_SYSTEM *fmod_system;

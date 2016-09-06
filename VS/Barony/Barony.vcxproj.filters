@@ -309,6 +309,9 @@
     <ClCompile Include="..\..\src\interface\updaterightsidebar.cpp">
       <Filter>Source Files\interface</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\src\monster_evilirat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\interface\interface.hpp">
@@ -393,5 +396,8 @@
     <ResourceCompile Include="..\..\src\wingameicon.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

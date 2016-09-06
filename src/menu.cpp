@@ -117,7 +117,7 @@ int secondendmovietime=0;
 int secondendmoviestage=0;
 double drunkextend=0;
 bool losingConnection[4] = { FALSE };
-bool subtitleVisible=FALSE;
+bool subtitleVisible=TRUE;
 int subtitleCurrent=0;
 
 void handleMainMenu(bool mode) {
