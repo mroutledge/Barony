@@ -38,6 +38,7 @@ void initTroll(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
+		myStats->lookupKey = "troll";
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;
 		myStats->HP = 100 + rand() % 20; myStats->MAXHP = myStats->HP;

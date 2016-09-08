@@ -15,6 +15,7 @@
 #include "entity.hpp"
 #include "items.hpp"
 #include "magic/magic.hpp"
+#include <string>
 
 stat_t stats[MAXPLAYERS];
 
@@ -320,7 +321,7 @@ stat_t *copyStats(stat_t *stat) {
 	node_t *node;
 	int c;
 
-	stat_t *newStat = (stat_t *)malloc(sizeof(stat_t));
+	stat_t *newStat = new stat_t();
 
 	newStat->type = stat->type;
 	newStat->sex = stat->sex;

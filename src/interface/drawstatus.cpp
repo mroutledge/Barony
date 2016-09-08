@@ -18,6 +18,7 @@
 #include "../net.hpp"
 #include "../menu.hpp"
 #include "interface.hpp"
+#include <string>
 
 char enemy_name[128];
 Sint32 enemy_hp=0, enemy_maxhp=0;
@@ -163,6 +164,13 @@ void updateEnemyBar(Entity *source, Entity *target, char *name, Sint32 hp, Sint3
 		net_packet->len = 12+strlen(name)+1;
 		sendPacketSafe(net_sock, -1, net_packet, player-1);
 	}
+}
+
+//overload mehtod to allow use of strings
+void updateEnemyBar(Entity *source, Entity *target, std::string name, Sint32 hp, Sint32 maxhp) {
+	char *nameAsChar = new char[name.length() + 1];
+	strcpy(nameAsChar, name.c_str());
+	updateEnemyBar(source, target, nameAsChar, hp, maxhp);
 }
 
 /*-------------------------------------------------------------------------------

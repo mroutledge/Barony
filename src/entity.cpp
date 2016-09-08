@@ -220,10 +220,10 @@ void Entity::killedByMonsterObituary(Entity *victim) {
 
 	if (myStats->type == hitstats->type) {
 		if (hitstats->sex == MALE) {
-			snprintf(tempstr, 256, language[1509], language[90 + hitstats->type]);
+			snprintf(tempstr, 256, language[1509], monsterNamesChar[hitstats->lookupKey]);
 		}
 		else {
-			snprintf(tempstr, 256, language[1510], language[90 + hitstats->type]);
+			snprintf(tempstr, 256, language[1510], monsterNamesChar[hitstats->lookupKey]);
 		}
 		victim->setObituary(tempstr);
 	}
@@ -2790,7 +2790,7 @@ void Entity::attack(int pose, int charge) {
 
 					// update enemy bar for attacker
 					if (!strcmp(hitstats->name, ""))
-						updateEnemyBar(this, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+						updateEnemyBar(this, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 					else
 						updateEnemyBar(this, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 
@@ -3023,11 +3023,11 @@ void Entity::attack(int pose, int charge) {
 						if (hitstats->HP > 0) {
 							if (damage > olddamage) {
 								Uint32 color = SDL_MapRGB(mainsurface->format, 0, 255, 0);
-								messagePlayerColor(player, color, language[689], language[90 + hitstats->type]);
+								messagePlayerColor(player, color, language[689], monsterNamesChar[hitstats->lookupKey]);
 							}
 							else {
 								Uint32 color = SDL_MapRGB(mainsurface->format, 0, 255, 0);
-								messagePlayerColor(player, color, language[690], language[90 + hitstats->type]);
+								messagePlayerColor(player, color, language[690], monsterNamesChar[hitstats->lookupKey]);
 							}
 							if (damage == 0) {
 								messagePlayer(player, language[691]);
@@ -3035,7 +3035,7 @@ void Entity::attack(int pose, int charge) {
 						}
 						else {
 							Uint32 color = SDL_MapRGB(mainsurface->format, 0, 255, 0);
-							messagePlayerColor(player, color, language[692], language[90 + hitstats->type]);
+							messagePlayerColor(player, color, language[692], monsterNamesChar[hitstats->lookupKey]);
 							awardXP(hit.entity, TRUE, TRUE);
 						}
 					}
@@ -3116,7 +3116,7 @@ void Entity::attack(int pose, int charge) {
 								else {
 									Uint32 color = SDL_MapRGB(mainsurface->format, 0, 255, 0);
 									if (!strcmp(hitstats->name, "")) {
-										messagePlayerColor(player, color, language[702], language[90 + hitstats->type]);
+										messagePlayerColor(player, color, language[702], monsterNamesChar[hitstats->lookupKey]);
 									}
 									else {
 										messagePlayerColor(player, color, language[703], hitstats->name);

@@ -1468,7 +1468,7 @@ void assignActions(map_t *map) {
 				node2->element = NULL;
 				node2->deconstructor = &emptyDeconstructor;
 
-				myStats = (stat_t *)malloc(sizeof(stat_t));
+				myStats = new stat_t();
 				node2 = list_AddNodeLast(&entity->children);
 				node2->element = myStats;
 				node2->deconstructor = &statDeconstructor;

@@ -373,7 +373,6 @@ char *readFile(char *filename) {
 	return file_contents;
 }
 
-
 std::vector<std::string> split(std::string file, char delimiter)
 {
 	using namespace std;
@@ -431,6 +430,20 @@ std::map<std::string, std::string> mapFile(char *filepath) {
 	{
 		vector<string> pair = split(line, ',');
 		results[pair[1]] = pair[0];
+	}
+
+	return results;
+}
+
+std::map<std::string, char *> mapFileToChar(char *filepath) {
+	using namespace std;
+	std::map<string, char *> results = {};
+	for each(string line in split(readTextFile(filepath), '\n'))
+	{
+		vector<string> pair = split(line, ',');
+		char *converter = new char[pair[0].length() + 1];
+		strcpy(converter, pair[0].c_str());
+		results[pair[1]] = converter;
 	}
 
 	return results;

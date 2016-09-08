@@ -537,7 +537,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 							if (strcmp(hitstats->name, ""))
 								messagePlayerColor(parent->skill[2], color, language[377], hitstats->name);
 							else
-								messagePlayerColor(parent->skill[2], color, language[378], language[90 + hitstats->type]);
+								messagePlayerColor(parent->skill[2], color, language[378], monsterNamesChar[hitstats->lookupKey]);
 						}
 					}
 				}
@@ -745,7 +745,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 
 							// update enemy bar for attacker
 							if (!strcmp(hitstats->name, ""))
-								updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+								updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 							else
 								updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 
@@ -864,7 +864,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 
 							// update enemy bar for attacker
 							if (!strcmp(hitstats->name, ""))
-								updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+								updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 							else
 								updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 
@@ -992,7 +992,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 
 							// update enemy bar for attacker
 							if (!strcmp(hitstats->name, ""))
-								updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+								updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 							else
 								updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 							if (hitstats->HP <= 0 && parent) {
@@ -1104,7 +1104,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 										messagePlayerColor(parent->skill[2], color, language[390], hitstats->name);
 									}
 									else {
-										messagePlayerColor(parent->skill[2], color, language[391], language[90 + hitstats->type]);
+										messagePlayerColor(parent->skill[2], color, language[391], monsterNamesChar[hitstats->lookupKey]);
 									}
 								}
 							}
@@ -1152,7 +1152,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 
 							// update enemy bar for attacker
 							if (!strcmp(hitstats->name, ""))
-								updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+								updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 							else
 								updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 							if (parent) {
@@ -1161,7 +1161,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 									if (strcmp(hitstats->name, ""))
 										messagePlayerColor(parent->skill[2], color, language[393], hitstats->name);
 									else
-										messagePlayerColor(parent->skill[2], color, language[394], language[90 + hitstats->type]);
+										messagePlayerColor(parent->skill[2], color, language[394], monsterNamesChar[hitstats->lookupKey]);
 								}
 							}
 							Uint32 color = SDL_MapRGB(mainsurface->format, 255, 0, 0);
@@ -1201,7 +1201,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 									if (strcmp(hitstats->name, ""))
 										messagePlayerColor(parent->skill[2], color, language[393], hitstats->name);
 									else
-										messagePlayerColor(parent->skill[2], color, language[394], language[90 + hitstats->type]);
+										messagePlayerColor(parent->skill[2], color, language[394], monsterNamesChar[hitstats->lookupKey]);
 								}
 							}
 							Uint32 color = SDL_MapRGB(mainsurface->format, 255, 0, 0);
@@ -1248,7 +1248,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 										messagePlayerColor(parent->skill[2], color, language[397], hitstats->name);
 									}
 									else {
-										messagePlayerColor(parent->skill[2], color, language[398], language[90 + hitstats->type]);
+										messagePlayerColor(parent->skill[2], color, language[398], monsterNamesChar[hitstats->lookupKey]);
 									}
 								}
 							}
@@ -1292,7 +1292,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 
 							// update enemy bar for attacker
 							if (!strcmp(hitstats->name, ""))
-								updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+								updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 							else
 								updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 							if (hitstats->HP <= 0 && parent) {

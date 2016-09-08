@@ -96,6 +96,7 @@ void updateAppraisalItemBox();
 void updatePlayerInventory();
 void updateShopWindow();
 void updateEnemyBar(Entity *source, Entity *target, char *name, Sint32 hp, Sint32 maxhp);
+void updateEnemyBar(Entity *source, Entity *target, std::string name, Sint32 hp, Sint32 maxhp);
 damageIndicator_t *newDamageIndicator(double x, double y);
 
 extern bool itemMenuOpen;

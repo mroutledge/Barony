@@ -110,7 +110,7 @@ void actArrow(Entity *my) {
 
 					// update enemy bar for attacker
 					if (!strcmp(hitstats->name, ""))
-						updateEnemyBar(parent, hit.entity, language[90 + hitstats->type], hitstats->HP, hitstats->MAXHP);
+						updateEnemyBar(parent, hit.entity, monsterNamesChar[hitstats->lookupKey], hitstats->HP, hitstats->MAXHP);
 					else
 						updateEnemyBar(parent, hit.entity, hitstats->name, hitstats->HP, hitstats->MAXHP);
 
@@ -175,7 +175,7 @@ void actArrow(Entity *my) {
 						if (parent->behavior == &actPlayer) {
 							if (!strcmp(hitstats->name, "")) {
 								Uint32 color = SDL_MapRGB(mainsurface->format, 0, 255, 0);
-								messagePlayerColor(parent->skill[2], color, language[446], language[90 + hitstats->type]);
+								messagePlayerColor(parent->skill[2], color, language[446], monsterNamesChar[hitstats->lookupKey]);
 								if (damage == 0)
 									messagePlayer(parent->skill[2], language[447]);
 							}

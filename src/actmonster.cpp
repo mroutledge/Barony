@@ -142,7 +142,7 @@ Entity *summonMonster(Monster creature, long x, long y) {
 		node->element = NULL;
 		node->deconstructor = &emptyDeconstructor;
 
-		myStats = (stat_t *)malloc(sizeof(stat_t));
+		myStats = new stat_t();
 		node = list_AddNodeLast(&entity->children); //ASSUMING THIS ALREADY EXISTS WHEN THIS FUNCTION IS CALLED.
 		node->element = myStats;
 		node->deconstructor = &statDeconstructor;

@@ -85,6 +85,7 @@ void initShopkeeper(Entity *my, stat_t *myStats) {
 
 		myStats->sex = MALE;
 		myStats->appearance = rand();
+		myStats->lookupKey = "shopkeeper";
 		strcpy(myStats->name, language[158 + rand() % 26]);
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

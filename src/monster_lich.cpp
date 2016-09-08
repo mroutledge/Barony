@@ -35,6 +35,7 @@ void initLich(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = MALE;
 		myStats->appearance = rand();
+		myStats->lookupKey = "lich";
 		strcpy(myStats->name, "Baron Herx");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

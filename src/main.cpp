@@ -33,6 +33,7 @@ bool stop = FALSE;
 char languageCode[32] = { 0 };
 char **language = NULL;
 std::map<std::string, std::string> monsterNames;
+std::map<std::string, char *> monsterNamesChar;
 
 // input stuff
 int reversemouse = 0;

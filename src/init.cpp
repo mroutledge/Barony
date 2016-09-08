@@ -391,15 +391,19 @@ int initApp(char *title, int fullscreen) {
 
 int loadLanguage(char *lang) {
 	char filename[128] = { 0 };
+	char mapfilepath[128] = { 0 };
 	FILE *fp;
 	int c;
+	char *langpathTemplate = "lang/%s.txt";
+	char *mapFilePathTemplate = "lang/%s-monster-names.txt";
 
 	// open log file
 	if (!logfile)
 		logfile = freopen("log.txt", "wb" /*or "wt"*/, stderr);
 
 	// compose filename
-	snprintf(filename, 127, "lang/%s.txt", lang);
+	snprintf(filename, 127, langpathTemplate, lang);
+	snprintf(mapfilepath, 127, mapFilePathTemplate, lang);
 
 	// check if language file is valid
 	if (access(filename, F_OK) == -1) {
@@ -544,7 +548,10 @@ int loadLanguage(char *lang) {
 	fclose(fp);
 	printlog("successfully loaded language file '%s'\n", filename);
 
-	monsterNames = mapFile("lang\en-monster-names.txt");
+	//create monster name dictionary
+	monsterNames = mapFile(mapfilepath);
+	monsterNamesChar = mapFileToChar(mapfilepath);
+
 	return 0;
 }
 

@@ -89,11 +89,12 @@ typedef enum {
 } sex_t;
 
 // character stat structure
-typedef struct stat_t {
+struct stat_t {
 	Monster type;
 	sex_t sex;
 	Uint32 appearance;
 	char name[128];
+	std::string lookupKey;
 	char obituary[128];
 	Uint32 poisonKiller; // uid of the entity which killed me via burning/poison
 
@@ -136,7 +137,7 @@ typedef struct stat_t {
 	list_t magic_effects; //Makes things like the invisibility spell work.
 
 	void printStats(); //Prints the monster's stats to the log.
-} stat_t;
+};
 extern stat_t stats[MAXPLAYERS];
 
 void statConstructor(stat_t *stat);

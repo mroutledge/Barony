@@ -193,6 +193,7 @@ typedef struct list_t {
 	node_t *first;
 	node_t *last;
 } list_t;
+
 extern list_t button_l;
 extern list_t light_l;
 
@@ -375,6 +376,7 @@ extern int minotaurlevel;
 extern char languageCode[32];
 extern char **language;
 extern std::map<std::string, std::string> monsterNames;
+extern std::map<std::string, char *> monsterNamesChar;
 
 // random game defines
 extern bool movie;
@@ -533,7 +535,6 @@ void printTextFormattedAlpha(SDL_Surface *font_bmp, int x, int y, Uint8 alpha, c
 void printTextFormattedColor(SDL_Surface *font_bmp, int x, int y, Uint32 color, char *fmt, ...);
 void printTextFormattedFancy(SDL_Surface *font_bmp, int x, int y, Uint32 color, double angle, double scale, char *fmt, ...);
 void printText(SDL_Surface *font_bmp, int x, int y, char *str);
-void drawSprite(view_t *camera, Entity *entity);
 void drawTooltip(SDL_Rect *src);
 
 // function prototypes for opengl.c:
@@ -568,6 +569,7 @@ extern char *cursor_fill[];
 //GLuint create_shader(const char* filename, GLenum type);
 std::string readTextFile(char *filename);
 std::map<std::string, std::string> mapFile(char *filepath);
+std::map<std::string, char *> mapFileToChar(char *filepath);
 
 char *readFile(char *filename);
 
