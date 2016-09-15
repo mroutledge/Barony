@@ -18,8 +18,9 @@
 #include "net.hpp"
 #include "items.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initSpider(Entity *my, stat_t *myStats) {
+void initSpider(Entity *my, Stat *myStats) {
 	int c;
 	
 	my->flags[UPDATENEEDED]=TRUE;
@@ -240,7 +241,7 @@ void actSpiderLimb(Entity *my) {
 	return;
 }
 
-void spiderMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void spiderMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity;
 	int bodypart;

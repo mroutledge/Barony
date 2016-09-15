@@ -18,8 +18,9 @@
 #include "sound.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initImp(Entity *my, stat_t *myStats) {
+void initImp(Entity *my, Stat *myStats) {
 	int c;
 	node_t *node;
 
@@ -289,7 +290,7 @@ void impDie(Entity *my) {
 
 #define IMPWALKSPEED .01
 
-void impMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void impMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity = NULL;
 	Entity *rightbody = NULL;

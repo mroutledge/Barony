@@ -22,6 +22,7 @@
 #include "../sound.hpp"
 #include "../shops.hpp"
 #include "../menu.hpp"
+#include "../player.hpp"
 
 Uint32 svFlags = 30;
 SDL_Surface *backdrop_bmp = NULL;
@@ -129,6 +130,7 @@ list_t damageIndicators;
 
 bool auto_hotbar_new_items = TRUE;
 bool disable_messages = FALSE;
+bool right_click_protect = FALSE;
 
 bool loadInterfaceResources() {
 	//General GUI images.
@@ -474,6 +476,8 @@ int saveConfig(char *filename) {
 	fprintf(fp,"/gamma %3.3f\n",vidgamma);
 	fprintf(fp,"/fov %d\n",fov);
 	fprintf(fp,"/svflags %d\n",svFlags);
+	if( lastname != "" )
+		fprintf(fp,"/lastname %s\n",lastname.c_str());
 	if( smoothlighting )
 		fprintf(fp,"/smoothlighting\n");
 	if( fullscreen )
@@ -500,7 +504,7 @@ int saveConfig(char *filename) {
 	if (!spawn_blood) {
 		fprintf(fp, "/noblood\n");
 	}
-	if( colorblind ) {
+	if (colorblind) {
 		fprintf(fp, "/colorblind\n");
 	}
 	if (!capture_mouse) {
@@ -519,6 +523,18 @@ int saveConfig(char *filename) {
 	if (disable_messages)
 	{
 		fprintf(fp, "/disablemessages\n");
+	}
+	if (right_click_protect) 
+	{
+		fprintf(fp, "/right_click_protect\n");
+	}
+	if (startfloor)
+	{
+		fprintf(fp, "/startfloor %d\n", startfloor);
+	}
+	if (splitscreen)
+	{
+		fprintf(fp, "/splitscreen\n", splitscreen);
 	}
 	fprintf(fp, "/skipintro\n");
 	

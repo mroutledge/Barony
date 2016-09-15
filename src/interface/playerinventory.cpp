@@ -17,6 +17,8 @@
 #include "../sound.hpp"
 #include "../net.hpp"
 #include "../magic/magic.hpp"
+#include "../menu.hpp"
+#include "../player.hpp"
 #include "interface.hpp"
 
 
@@ -241,12 +243,27 @@ void updatePlayerInventory() {
 	// draw contents of each slot
 	x = INVENTORY_STARTX;
 	y = INVENTORY_STARTY;
-	for( node=stats[clientnum].inventory.first; node!=NULL; node=nextnode ) {
+	for( node=stats[clientnum]->inventory.first; node!=NULL; node=nextnode ) {
 		nextnode = node->next;
 		Item *item = (Item *)node->element;
 		if( item==selectedItem || (inventory_mode == INVENTORY_MODE_ITEM && itemCategory(item) == SPELL_CAT) || (inventory_mode == INVENTORY_MODE_SPELL && itemCategory(item) != SPELL_CAT))
 			//Item is selected, or, item is a spell but it's item inventory mode, or, item is an item but it's spell inventory mode...(this filters out items)
 			continue;
+
+		// give it a yellow background if it is unidentified
+		if (!item->identified) {
+			pos.x = x + item->x*INVENTORY_SLOTSIZE + 2; pos.y = y + item->y*INVENTORY_SLOTSIZE + 1;
+			pos.w = 38; pos.h = 38;
+			drawRect(&pos, 31875, 125);
+		} else if (item->beatitude < 0) { // give it a red background if cursed
+			pos.x = x + item->x*INVENTORY_SLOTSIZE + 2; pos.y = y + item->y*INVENTORY_SLOTSIZE + 1;
+			pos.w = 38; pos.h = 38;
+			drawRect(&pos, 125, 125);
+		} else if (item->beatitude > 0) { // give it a green background if blessed
+			pos.x = x + item->x*INVENTORY_SLOTSIZE + 2; pos.y = y + item->y*INVENTORY_SLOTSIZE + 1;
+			pos.w = 38; pos.h = 38;
+			drawRect(&pos, 65280, 65);
+		}
 
 		// draw item
 		pos.x = x+item->x*INVENTORY_SLOTSIZE+4; pos.y = y+item->y*INVENTORY_SLOTSIZE+4;
@@ -323,7 +340,7 @@ void updatePlayerInventory() {
 
 	// mouse interactions
 	if( !selectedItem ) {
-		for( node=stats[clientnum].inventory.first; node!=NULL; node=nextnode ) {
+		for( node=stats[clientnum]->inventory.first; node!=NULL; node=nextnode ) {
 			nextnode = node->next;
 			Item *item = (Item *)node->element; //I don't like that there's not a check that either are null.
 
@@ -403,7 +420,7 @@ void updatePlayerInventory() {
 						}
 					}
 
-					if( stats[clientnum].HP<=0 )
+					if( stats[clientnum]->HP<=0 )
 						break;
 
 					// handle clicking
@@ -430,7 +447,7 @@ void updatePlayerInventory() {
 				}
 			}
 		}
-	} else if( stats[clientnum].HP>0 ) {
+	} else if( stats[clientnum]->HP>0 ) {
 		// releasing items
 		if( (!mousestatus[SDL_BUTTON_LEFT] && !toggleclick) || (mousestatus[SDL_BUTTON_LEFT] && toggleclick) ) {
 			if( openedChest[clientnum] && itemCategory(selectedItem) != SPELL_CAT ) {
@@ -452,7 +469,7 @@ void updatePlayerInventory() {
 					int oldy = selectedItem->y;
 					selectedItem->x = (mousex-x)/INVENTORY_SLOTSIZE;
 					selectedItem->y = (mousey-y)/INVENTORY_SLOTSIZE;
-					for( node=stats[clientnum].inventory.first; node!=NULL; node=nextnode ) {
+					for( node=stats[clientnum]->inventory.first; node!=NULL; node=nextnode ) {
 						nextnode = node->next;
 						Item *tempItem = (Item *)node->element;
 						if( tempItem == selectedItem )
@@ -615,7 +632,7 @@ void updatePlayerInventory() {
 			//Tis a spell.
 			ttfPrintText(ttf12, itemMenuX+50-strlen(itemUseString(currentItem))*TTF12_WIDTH/2, itemMenuY+4, itemUseString(currentItem));
 		}
-		if( mousey<itemMenuY-20 ) {
+		if( mousey<itemMenuY-20) {
 			itemMenuSelected=-1; // for cancelling out
 		}
 		else if( mousey>=itemMenuY-2 && mousey<itemMenuY+20 ) {
@@ -635,10 +652,10 @@ void updatePlayerInventory() {
 		}
 		if( mousex>=itemMenuX+100 )
 			itemMenuSelected=-1; // for cancelling out
-		if( mousex<itemMenuX-10 )
+		if( mousex<itemMenuX-10 || mousex<itemMenuX && settings_right_click_protect)
 			itemMenuSelected=-1; // for cancelling out
 		if( !mousestatus[SDL_BUTTON_RIGHT] ) {
-			if( itemMenuSelected==0 ) {
+			if( itemMenuSelected==0) {
 				if (openedChest[clientnum] && itemCategory(currentItem) != SPELL_CAT) {
 					openedChest[clientnum]->addItemToChestFromInventory(clientnum, currentItem, FALSE);
 					currentItem = uidToItem(itemMenuItem);
@@ -664,7 +681,7 @@ void updatePlayerInventory() {
 							net_packet->len = 26;
 							sendPacketSafe(net_sock, -1, net_packet, 0);
 						}
-						equipItem(currentItem,&stats[clientnum].weapon,clientnum);
+						equipItem(currentItem,&stats[clientnum]->weapon,clientnum);
 						currentItem = uidToItem(itemMenuItem);
 					}
 				}
@@ -698,7 +715,7 @@ void updatePlayerInventory() {
 								net_packet->len = 26;
 								sendPacketSafe(net_sock, -1, net_packet, 0);
 							}
-							equipItem(currentItem,&stats[clientnum].weapon,clientnum);
+							equipItem(currentItem,&stats[clientnum]->weapon,clientnum);
 							currentItem = uidToItem(itemMenuItem);
 						} else {
 							useItem(currentItem,clientnum);

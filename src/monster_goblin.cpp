@@ -18,8 +18,9 @@
 #include "sound.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initGoblin(Entity *my, stat_t *myStats) {
+void initGoblin(Entity *my, Stat *myStats) {
 	int c;
 	node_t *node;
 
@@ -494,7 +495,7 @@ void goblinDie(Entity *my) {
 
 #define GOBLINWALKSPEED .13
 
-void goblinMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void goblinMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity = NULL, *entity2 = NULL;
 	Entity *rightbody = NULL;

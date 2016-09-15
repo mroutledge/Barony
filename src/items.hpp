@@ -216,6 +216,14 @@ typedef enum Status {
 	EXCELLENT
 } Status;
 
+class SummonProperties
+{
+	//TODO: Store monster stats.
+public:
+	SummonProperties();
+	~SummonProperties();
+};
+
 // inventory item structure
 class Item {
 public:
@@ -232,6 +240,14 @@ public:
 	// weight, category and other generic info reported by function calls
 
 	node_t *node;
+
+	/*
+	 * Gems use this to store information about what sort of creature they contain.
+	 */
+	//SummonProperties *captured_monster;
+	//I wish there was an easy way to do this.
+	//As it stands, no item destructor is called , so this would lead to a memory leak.
+	//And tracking down every time an item gets deleted and calling an item destructor would be quite a doozey.
 
 	char *description();
 	char *getName();
@@ -316,8 +332,8 @@ Item *newItem(ItemType type, Status status,Sint16 beatitude,Sint16 count,Uint32 
 Item *uidToItem(Uint32 uid);
 ItemType itemCurve(Category cat);
 Item* newItemFromEntity(Entity *entity); //Make sure to call free(item).
-Entity *dropItemMonster(Item *item, Entity *monster, stat_t *monsterStats);
-Item **itemSlot(stat_t *myStats, Item *item);
+Entity *dropItemMonster(Item *item, Entity *monster, Stat *monsterStats);
+Item **itemSlot(Stat *myStats, Item *item);
 
 enum Category itemCategory(Item *item);
 Sint32 itemModel(Item *item);

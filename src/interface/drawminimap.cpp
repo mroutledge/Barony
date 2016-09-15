@@ -12,10 +12,11 @@
 #include "../main.hpp"
 #include "../game.hpp"
 #include "../stat.hpp"
-#include "interface.hpp"
 #include "../items.hpp"
 #include "../sound.hpp"
 #include "../menu.hpp"
+#include "../player.hpp"
+#include "interface.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -95,8 +96,8 @@ void drawMinimap() {
 			}
 		} else {
 			if( entity->behavior == &actMonster ) {
-				if( stats[clientnum].ring != NULL ) {
-					if( stats[clientnum].ring->type == RING_WARNING ) {
+				if( stats[clientnum]->ring != NULL ) {
+					if( stats[clientnum]->ring->type == RING_WARNING ) {
 						x = floor(entity->x/16);
 						y = floor(entity->y/16);
 						glColor4f( .5, .25, .5, 1 );
@@ -135,7 +136,7 @@ void drawMinimap() {
 				foundme=TRUE;
 		} else if( entity->behavior==&actMonster ) {
 			node_t *node2;
-			for( node2=stats[clientnum].FOLLOWERS.first; node2!=NULL; node2=node2->next ) {
+			for( node2=stats[clientnum]->FOLLOWERS.first; node2!=NULL; node2=node2->next ) {
 				if( *((Uint32 *)node2->element)==entity->uid ) {
 					drawchar=TRUE;
 					break;
@@ -154,7 +155,7 @@ void drawMinimap() {
 			x = xres-map.width*MINIMAPSCALE+(int)(entity->x/(16.f/MINIMAPSCALE));
 			y = map.height*MINIMAPSCALE-(int)(entity->y/(16.f/MINIMAPSCALE));
 			if( softwaremode ) {
-				//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color);
+				//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color); //TODO: NOT a PLAYERSWAP
 			} else {
 				glColor4f(((Uint8)(color>>mainsurface->format->Rshift))/255.f,((Uint8)(color>>mainsurface->format->Gshift))/255.f,((Uint8)(color>>mainsurface->format->Bshift))/255.f,1);
 				glBegin(GL_POINTS);
@@ -187,7 +188,7 @@ void drawMinimap() {
 				
 				// draw the pixel
 				if( softwaremode ) {
-					//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color);
+					//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color); //TODO: NOT a PLAYERSWAP
 				} else {
 					glColor4f(((Uint8)(color>>mainsurface->format->Rshift))/255.f,((Uint8)(color>>mainsurface->format->Gshift))/255.f,((Uint8)(color>>mainsurface->format->Bshift))/255.f,1);
 					glBegin(GL_POINTS);
@@ -199,7 +200,7 @@ void drawMinimap() {
 	}
 	
 	// draw minotaur
-	if( players[clientnum] == NULL )
+	if (players[clientnum] == nullptr)
 		return;
 	for( node=map.entities->first; node!=NULL; node=node->next ) {
 		Entity *entity = (Entity *)node->element;
@@ -217,7 +218,7 @@ void drawMinimap() {
 				x = xres-map.width*MINIMAPSCALE+(int)(entity->x/(16.f/MINIMAPSCALE));
 				y = map.height*MINIMAPSCALE-(int)(entity->y/(16.f/MINIMAPSCALE));
 				if( softwaremode ) {
-					//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color);
+					//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color); //TODO: NOT a PLAYERSWAP
 				} else {
 					glColor4f(((Uint8)(color>>16))/255.f,((Uint8)(color>>8))/255.f,((Uint8)(color))/255.f,1);
 					glBegin(GL_POINTS);
@@ -249,7 +250,7 @@ void drawMinimap() {
 				
 					// draw the pixel
 					if( softwaremode ) {
-						//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color);
+						//SPG_Pixel(screen,(int)(players[c]->x/16)+564+x+xres/2-(status_bmp->w/2),(int)(players[c]->y/16)+yres-71+y,color); //TODO: NOT a PLAYERSWAR
 					} else {
 						glColor4f(((Uint8)(color>>16))/255.f,((Uint8)(color>>8))/255.f,((Uint8)(color))/255.f,1);
 						glBegin(GL_POINTS);

@@ -12,8 +12,9 @@
 #include "../main.hpp"
 #include "../game.hpp"
 #include "../stat.hpp"
-#include "interface.hpp"
 #include "../items.hpp"
+#include "../player.hpp"
+#include "interface.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -83,31 +84,37 @@ void updateCharacterSheet() {
 	// character sheet
 	double ofov = fov;
 	fov = 50;
-	if( players[clientnum] != NULL ) {
-		if( !softwaremode )
-			glClear( GL_DEPTH_BUFFER_BIT );
+	if (players[clientnum] != nullptr && players[clientnum]->entity != nullptr)
+	{
+		if (!softwaremode)
+			glClear(GL_DEPTH_BUFFER_BIT);
+		//TODO: These two NOT PLAYERSWAP
 		//camera.x=players[clientnum]->x/16.0+.5*cos(players[clientnum]->yaw)-.4*sin(players[clientnum]->yaw);
 		//camera.y=players[clientnum]->y/16.0+.5*sin(players[clientnum]->yaw)+.4*cos(players[clientnum]->yaw);
-		camera_charsheet.x=players[clientnum]->x/16.0+.65;
-		camera_charsheet.y=players[clientnum]->y/16.0+.65;
-		camera_charsheet.z=players[clientnum]->z*2;
-		//camera.ang=atan2(players[clientnum]->y/16.0-camera.y,players[clientnum]->x/16.0-camera.x);
-		camera_charsheet.ang=5*PI/4;
-		camera_charsheet.vang=PI/20;
-		camera_charsheet.winx=8;
-		camera_charsheet.winy=8;
-		camera_charsheet.winw=208;
-		camera_charsheet.winh=180;
-		b=players[clientnum]->flags[BRIGHT];
-		players[clientnum]->flags[BRIGHT]=TRUE;
-		if( !players[clientnum]->flags[INVISIBLE] ) {
-			glDrawVoxel(&camera_charsheet,players[clientnum],REALCOLORS);
+		camera_charsheet.x = players[clientnum]->entity->x/16.0 + .65;
+		camera_charsheet.y = players[clientnum]->entity->y/16.0 + .65;
+		camera_charsheet.z = players[clientnum]->entity->z*2;
+		//camera.ang=atan2(players[clientnum]->y/16.0-camera.y,players[clientnum]->x/16.0-camera.x); //TODO: _NOT_ PLAYERSWAP
+		camera_charsheet.ang = 5*PI/4;
+		camera_charsheet.vang = PI/20;
+		camera_charsheet.winx = 8;
+		camera_charsheet.winy = 8;
+		camera_charsheet.winw = 208;
+		camera_charsheet.winh = 180;
+		b = players[clientnum]->entity->flags[BRIGHT];
+		players[clientnum]->entity->flags[BRIGHT]=TRUE;
+		if (!players[clientnum]->entity->flags[INVISIBLE])
+		{
+			glDrawVoxel(&camera_charsheet, players[clientnum]->entity, REALCOLORS);
 		}
-		players[clientnum]->flags[BRIGHT]=b;
-		c=0;
-		if( multiplayer!=CLIENT ) {
-			for( node=players[clientnum]->children.first; node!=NULL; node=node->next ) {
-				if( c==0 ) {
+		players[clientnum]->entity->flags[BRIGHT] = b;
+		c = 0;
+		if (multiplayer != CLIENT)
+		{
+			for (node = players[clientnum]->entity->children.first; node != nullptr; node = node->next)
+			{
+				if (c == 0)
+				{
 					c++;
 					continue;
 				}
@@ -144,19 +151,19 @@ void updateCharacterSheet() {
 	}
 	fov = ofov;
 
-	ttfPrintTextFormatted(ttf12,8,202,"%s",stats[clientnum].name);
-	ttfPrintTextFormatted(ttf12,8,214,language[359],stats[clientnum].LVL,language[1900+client_classes[clientnum]]);
-	ttfPrintTextFormatted(ttf12,8,226,language[360],stats[clientnum].EXP);
+	ttfPrintTextFormatted(ttf12,8,202,"%s",stats[clientnum]->name);
+	ttfPrintTextFormatted(ttf12,8,214,language[359],stats[clientnum]->LVL,language[1900+client_classes[clientnum]]);
+	ttfPrintTextFormatted(ttf12,8,226,language[360],stats[clientnum]->EXP);
 	ttfPrintTextFormatted(ttf12,8,238,language[361],currentlevel);
 
 	// attributes
 	if( attributespage==0 ) {
-		ttfPrintTextFormatted(ttf12,8,262,language[1200],statGetSTR(&stats[clientnum]),stats[clientnum].STR);
-		ttfPrintTextFormatted(ttf12,8,274,language[1201],statGetDEX(&stats[clientnum]),stats[clientnum].DEX);
-		ttfPrintTextFormatted(ttf12,8,286,language[1202],statGetCON(&stats[clientnum]),stats[clientnum].CON);
-		ttfPrintTextFormatted(ttf12,8,298,language[1203],statGetINT(&stats[clientnum]),stats[clientnum].INT);
-		ttfPrintTextFormatted(ttf12,8,310,language[1204],statGetPER(&stats[clientnum]),stats[clientnum].PER);
-		ttfPrintTextFormatted(ttf12,8,322,language[1205],statGetCHR(&stats[clientnum]),stats[clientnum].CHR);
+		ttfPrintTextFormatted(ttf12,8,262,language[1200],statGetSTR(stats[clientnum]),stats[clientnum]->STR);
+		ttfPrintTextFormatted(ttf12,8,274,language[1201],statGetDEX(stats[clientnum]),stats[clientnum]->DEX);
+		ttfPrintTextFormatted(ttf12,8,286,language[1202],statGetCON(stats[clientnum]),stats[clientnum]->CON);
+		ttfPrintTextFormatted(ttf12,8,298,language[1203],statGetINT(stats[clientnum]),stats[clientnum]->INT);
+		ttfPrintTextFormatted(ttf12,8,310,language[1204],statGetPER(stats[clientnum]),stats[clientnum]->PER);
+		ttfPrintTextFormatted(ttf12,8,322,language[1205],statGetCHR(stats[clientnum]),stats[clientnum]->CHR);
 	} else {
 		ttfPrintTextFormatted(ttf12,8,262,language[1883]);
 
@@ -178,33 +185,33 @@ void updateCharacterSheet() {
 	// skill levels
 	if( attributespage>0 ) {
 		for( i=(NUMPROFICIENCIES/2)*(attributespage-1); i<(NUMPROFICIENCIES/2)*attributespage; i++ ) {
-			if( stats[clientnum].PROFICIENCIES[i] == 0 )
+			if( stats[clientnum]->PROFICIENCIES[i] == 0 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[363]);
-			else if( stats[clientnum].PROFICIENCIES[i] < 20 )
+			else if( stats[clientnum]->PROFICIENCIES[i] < 20 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[364]);
-			else if( stats[clientnum].PROFICIENCIES[i] >= 20 && stats[clientnum].PROFICIENCIES[i] < 40 )
+			else if( stats[clientnum]->PROFICIENCIES[i] >= 20 && stats[clientnum]->PROFICIENCIES[i] < 40 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[365]);
-			else if( stats[clientnum].PROFICIENCIES[i] >= 40 && stats[clientnum].PROFICIENCIES[i] < 60 )
+			else if( stats[clientnum]->PROFICIENCIES[i] >= 40 && stats[clientnum]->PROFICIENCIES[i] < 60 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[366]);
-			else if( stats[clientnum].PROFICIENCIES[i] >= 60 && stats[clientnum].PROFICIENCIES[i] < 80 )
+			else if( stats[clientnum]->PROFICIENCIES[i] >= 60 && stats[clientnum]->PROFICIENCIES[i] < 80 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[367]);
-			else if( stats[clientnum].PROFICIENCIES[i] >= 80 && stats[clientnum].PROFICIENCIES[i] < 100 )
+			else if( stats[clientnum]->PROFICIENCIES[i] >= 80 && stats[clientnum]->PROFICIENCIES[i] < 100 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[368]);
-			else if( stats[clientnum].PROFICIENCIES[i] >= 100 )
+			else if( stats[clientnum]->PROFICIENCIES[i] >= 100 )
 				ttfPrintTextFormatted(ttf12,8,286+(i%(NUMPROFICIENCIES/2))*12,language[369]);
 		}
 	}
 
 	// armor, gold, and weight
 	if( attributespage==0 ) {
-		ttfPrintTextFormatted(ttf12,8,346,language[370],stats[clientnum].GOLD);
-		ttfPrintTextFormatted(ttf12,8,358,language[371],AC(&stats[clientnum]));
+		ttfPrintTextFormatted(ttf12,8,346,language[370],stats[clientnum]->GOLD);
+		ttfPrintTextFormatted(ttf12,8,358,language[371],AC(stats[clientnum]));
 		Uint32 weight=0;
-		for( node=stats[clientnum].inventory.first; node!=NULL; node=node->next ) {
+		for( node=stats[clientnum]->inventory.first; node!=NULL; node=node->next ) {
 			item = (Item *)node->element;
 			weight += items[item->type].weight*item->count;
 		}
-		weight+=stats[clientnum].GOLD/100;
+		weight+=stats[clientnum]->GOLD/100;
 		ttfPrintTextFormatted(ttf12,8,370,language[372],weight);
 	}
 	printTextFormatted(font12x12_bmp,112-30,420-12-8,"%d / 3",attributespage+1); // attributes pane page number

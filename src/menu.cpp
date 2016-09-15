@@ -33,6 +33,7 @@
 #include "credits.hpp"
 #include "paths.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
 #ifdef STEAMWORKS
 //Helper func. //TODO: Bugger.
@@ -84,6 +85,7 @@ int multiplayerselect=SINGLE;
 int menuselect=0;
 bool settings_auto_hotbar_new_items = TRUE;
 bool settings_disable_messages = TRUE;
+bool settings_right_click_protect = FALSE;
 bool playing_random_char = FALSE;
 bool colorblind = FALSE;
 Sint32 oslidery=0;
@@ -629,11 +631,12 @@ void handleMainMenu(bool mode) {
 		ttfPrintText(ttf16, subx1+8, suby1+8, language[1318]);
 	
 		// draw character window
-		if( players[clientnum] != NULL ) {
-			camera_charsheet.x=players[clientnum]->x/16.0+1;
-			camera_charsheet.y=players[clientnum]->y/16.0-.5;
-			camera_charsheet.z=players[clientnum]->z*2;
-			camera_charsheet.ang=atan2(players[clientnum]->y/16.0-camera_charsheet.y,players[clientnum]->x/16.0-camera_charsheet.x);
+		if (players[clientnum] != nullptr && players[clientnum]->entity != nullptr)
+		{
+			camera_charsheet.x=players[clientnum]->entity->x/16.0+1;
+			camera_charsheet.y=players[clientnum]->entity->y/16.0-.5;
+			camera_charsheet.z=players[clientnum]->entity->z*2;
+			camera_charsheet.ang=atan2(players[clientnum]->entity->y/16.0-camera_charsheet.y,players[clientnum]->entity->x/16.0-camera_charsheet.x);
 			camera_charsheet.vang=PI/24;
 			camera_charsheet.winw=360;
 			camera_charsheet.winy=suby1+32;
@@ -642,18 +645,18 @@ void handleMainMenu(bool mode) {
 			pos.x = camera_charsheet.winx; pos.y = camera_charsheet.winy;
 			pos.w = camera_charsheet.winw; pos.h = camera_charsheet.winh;
 			drawRect(&pos,0,255);
-			b=players[clientnum]->flags[BRIGHT];
-			players[clientnum]->flags[BRIGHT]=TRUE;
+			b=players[clientnum]->entity->flags[BRIGHT];
+			players[clientnum]->entity->flags[BRIGHT]=TRUE;
 			if (!playing_random_char) {
-				if( !players[clientnum]->flags[INVISIBLE] ) {
+				if( !players[clientnum]->entity->flags[INVISIBLE] ) {
 					double ofov = fov;
 					fov = 50;
-					glDrawVoxel(&camera_charsheet,players[clientnum],REALCOLORS);
+					glDrawVoxel(&camera_charsheet,players[clientnum]->entity,REALCOLORS);
 					fov = ofov;
 				}
-				players[clientnum]->flags[BRIGHT]=b;
+				players[clientnum]->entity->flags[BRIGHT]=b;
 				c=0;
-				for( node=players[clientnum]->children.first; node!=NULL; node=node->next ) {
+				for( node=players[clientnum]->entity->children.first; node!=NULL; node=node->next ) {
 					if( c==0 ) {
 						c++;
 					}
@@ -676,7 +679,7 @@ void handleMainMenu(bool mode) {
 		// sexes
 		if( charcreation_step==1 ) {
 			ttfPrintText(ttf16, subx1+24, suby1+32, language[1319]);
-			if( stats[0].sex==0 ) {
+			if( stats[0]->sex==0 ) {
 				ttfPrintTextFormatted(ttf16, subx1+32, suby1+56, "[o] %s", language[1321]);
 				ttfPrintTextFormatted(ttf16, subx1+32, suby1+72, "[ ] %s", language[1322]);
 			
@@ -691,21 +694,21 @@ void handleMainMenu(bool mode) {
 				if( omousex >= subx1+40 && omousex < subx1+72 ) {
 					if( omousey >= suby1+56 && omousey < suby1+72 ) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
-						stats[0].sex = MALE;
+						stats[0]->sex = MALE;
 					}
 					else if( omousey >= suby1+72 && omousey < suby1+88 ) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
-						stats[0].sex = FEMALE;
+						stats[0]->sex = FEMALE;
 					}
 				}
 			}
 			if( keystatus[SDL_SCANCODE_UP] ) {
 				keystatus[SDL_SCANCODE_UP] = 0;
-				stats[0].sex = static_cast<sex_t>((stats[0].sex==MALE));
+				stats[0]->sex = static_cast<sex_t>((stats[0]->sex==MALE));
 			}
 			if( keystatus[SDL_SCANCODE_DOWN] ) {
 				keystatus[SDL_SCANCODE_DOWN] = 0;
-				stats[0].sex = static_cast<sex_t>((stats[0].sex==MALE));
+				stats[0]->sex = static_cast<sex_t>((stats[0]->sex==MALE));
 			}
 		}
 	
@@ -726,7 +729,7 @@ void handleMainMenu(bool mode) {
 							client_classes[0] = c;
 						
 							// reset class loadout
-							clearStats(&stats[0]);
+							stats[0]->clearStats();
 							initClass(0);
 						}
 					}
@@ -738,7 +741,7 @@ void handleMainMenu(bool mode) {
 						client_classes[0]=9;
 				
 					// reset class loadout
-					clearStats(&stats[0]);
+					stats[0]->clearStats();
 					initClass(0);
 				}
 				if( keystatus[SDL_SCANCODE_DOWN] ) {
@@ -748,7 +751,7 @@ void handleMainMenu(bool mode) {
 						client_classes[0]=0;
 				
 					// reset class loadout
-					clearStats(&stats[0]);
+					stats[0]->clearStats();
 					initClass(0);
 				}
 			}
@@ -761,7 +764,7 @@ void handleMainMenu(bool mode) {
 		else if( charcreation_step==3 ) {
 			ttfPrintText(ttf16, subx1+24, suby1+32, language[1324]);
 			for( c=0; c<NUMAPPEARANCES; c++ ) {
-				if( stats[0].appearance==c ) {
+				if( stats[0]->appearance==c ) {
 					ttfPrintTextFormatted(ttf16, subx1+32, suby1+56+c*16, "[o] %s", language[20+c]);
 					ttfPrintText(ttf12, subx1+8, suby2-80, language[38+c]);
 				} else {
@@ -771,21 +774,21 @@ void handleMainMenu(bool mode) {
 					if( omousex >= subx1+40 && omousex < subx1+72 ) {
 						if( omousey >= suby1+56+16*c && omousey < suby1+72+16*c ) {
 							mousestatus[SDL_BUTTON_LEFT] = 0;
-							stats[0].appearance = c;
+							stats[0]->appearance = c;
 						}
 					}
 				}
 				if( keystatus[SDL_SCANCODE_UP] ) {
 					keystatus[SDL_SCANCODE_UP] = 0;
-					stats[0].appearance--;
-					if( stats[0].appearance>=NUMAPPEARANCES )
-						stats[0].appearance=NUMAPPEARANCES-1;
+					stats[0]->appearance--;
+					if( stats[0]->appearance>=NUMAPPEARANCES )
+						stats[0]->appearance=NUMAPPEARANCES-1;
 				}
 				if( keystatus[SDL_SCANCODE_DOWN] ) {
 					keystatus[SDL_SCANCODE_DOWN] = 0;
-					stats[0].appearance++;
-					if( stats[0].appearance>=NUMAPPEARANCES )
-						stats[0].appearance=0;
+					stats[0]->appearance++;
+					if( stats[0]->appearance>=NUMAPPEARANCES )
+						stats[0]->appearance=0;
 				}
 			}
 		}
@@ -794,19 +797,24 @@ void handleMainMenu(bool mode) {
 		else if( charcreation_step==4 ) {
 			ttfPrintText(ttf16, subx1+24, suby1+32, language[1325]);
 			drawDepressed(subx1+40,suby1+56,subx1+364,suby1+88);
-			ttfPrintText(ttf16,subx1+48,suby1+64,stats[0].name);
+			ttfPrintText(ttf16,subx1+48,suby1+64,stats[0]->name);
 			ttfPrintText(ttf12, subx1+8, suby2-80, language[1326]);
 		
 			// enter character name
 			if( !SDL_IsTextInputActive() ) {
-				inputstr = stats[0].name;
+				inputstr = stats[0]->name;
 				SDL_StartTextInput();
 			}
-			//strncpy(stats[0].name,inputstr,16);
+			//strncpy(stats[0]->name,inputstr,16);
 			inputlen = 22;
+			if (lastname != "" && strlen(inputstr) == 0) {
+				strncat(inputstr, lastname.c_str(), std::max<size_t>(0, inputlen - strlen(inputstr)));
+				lastname = ""; // Set this to nothing while we're currently editing so it doesn't keep filling it.  We'll save it again if we leave this tab.
+			}
+
 			if( (ticks-cursorflash)%TICKS_PER_SECOND<TICKS_PER_SECOND/2 ) {
 				int x;
-				TTF_SizeUTF8(ttf16,stats[0].name,&x,NULL);
+				TTF_SizeUTF8(ttf16,stats[0]->name,&x,NULL);
 				ttfPrintText(ttf16,subx1+48+x,suby1+64,"_");
 			}
 		}
@@ -1171,17 +1179,21 @@ void handleMainMenu(bool mode) {
 			else
 				ttfPrintTextFormatted(ttf12, subx1+36, suby1+84, "[ ] %s", language[1372]);
 			if( settings_nohud )
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+108, "[x] %s", language[1373]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+100, "[x] %s", language[1373]);
 			else
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+108, "[ ] %s", language[1373]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+100, "[ ] %s", language[1373]);
 			if( settings_auto_hotbar_new_items)
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+132, "[x] %s", language[1374]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+116, "[x] %s", language[1374]);
 			else
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+132, "[ ] %s", language[1374]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+116, "[ ] %s", language[1374]);
 			if( settings_disable_messages )
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+156, "[x] %s", language[1536]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+132, "[x] %s", language[1536]);
 			else
-				ttfPrintTextFormatted(ttf12, subx1+36, suby1+156, "[ ] %s", language[1536]);
+				ttfPrintTextFormatted(ttf12, subx1+36, suby1+132, "[ ] %s", language[1536]);
+			if ( settings_right_click_protect )
+				ttfPrintTextFormatted(ttf12, subx1 + 36, suby1 + 148, "[x] %s", language[1960]);
+			else
+				ttfPrintTextFormatted(ttf12, subx1 + 36, suby1 + 148, "[ ] %s", language[1960]);
 
 			// server flag elements
 			ttfPrintText(ttf12, subx1+24, suby1+180, language[1375]);
@@ -1220,17 +1232,21 @@ void handleMainMenu(bool mode) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
 						settings_broadcast=(settings_broadcast==FALSE);
 					}
-					else if( omousey >= suby1+108 && omousey < suby1+108+12 ) {
+					else if( omousey >= suby1+100 && omousey < suby1+100+12 ) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
 						settings_nohud=(settings_nohud==FALSE);
 					}
-					else if( omousey >= suby1+132 && omousey < suby1+132+12 ) {
+					else if( omousey >= suby1+116 && omousey < suby1+116+12 ) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
 						settings_auto_hotbar_new_items = (settings_auto_hotbar_new_items == FALSE);
 					}
-					else if( omousey >= suby1+156 && omousey < suby1+156+12 ) {
+					else if( omousey >= suby1+132 && omousey < suby1+132+12 ) {
 						mousestatus[SDL_BUTTON_LEFT] = 0;
 						settings_disable_messages = (settings_disable_messages == FALSE);
+					}
+					else if (omousey >= suby1 + 148 && omousey < suby1 + 148 + 12) {
+						mousestatus[SDL_BUTTON_LEFT] = 0;
+						settings_right_click_protect = (settings_right_click_protect == FALSE);
 					}
 				}
 				if( multiplayer!=CLIENT ) {
@@ -1421,11 +1437,11 @@ void handleMainMenu(bool mode) {
 					}
 				} else {
 					// on success, client gets legit player number
-					strcpy(stats[c].name,(char *)(&net_packet->data[19]));
+					strcpy(stats[c]->name,(char *)(&net_packet->data[19]));
 					client_disconnected[c]=FALSE;
 					client_classes[c]=(int)SDLNet_Read32(&net_packet->data[42]);
-					stats[c].sex=static_cast<sex_t>((int)SDLNet_Read32(&net_packet->data[46]));
-					stats[c].appearance=(int)SDLNet_Read32(&net_packet->data[50]);
+					stats[c]->sex=static_cast<sex_t>((int)SDLNet_Read32(&net_packet->data[46]));
+					stats[c]->appearance=(int)SDLNet_Read32(&net_packet->data[50]);
 					net_clients[c-1].host = net_packet->address.host;
 					net_clients[c-1].port = net_packet->address.port;
 					if ( directConnect ) {
@@ -1444,15 +1460,15 @@ void handleMainMenu(bool mode) {
 						strcpy((char *)(&net_packet->data[0]),"NEWPLAYER");
 						net_packet->data[9] = c; // clientnum
 						net_packet->data[10] = client_classes[c]; // class
-						net_packet->data[11] = stats[c].sex; // sex
-						strcpy((char *)(&net_packet->data[12]),stats[c].name); // name
+						net_packet->data[11] = stats[c]->sex; // sex
+						strcpy((char *)(&net_packet->data[12]),stats[c]->name); // name
 						net_packet->address.host = net_clients[x-1].host;
 						net_packet->address.port = net_clients[x-1].port;
-						net_packet->len = 12+strlen(stats[c].name)+1;
+						net_packet->len = 12+strlen(stats[c]->name)+1;
 						sendPacketSafe(net_sock, -1, net_packet, x-1);
 					}
 					char shortname[11] = { 0 };
-					strncpy(shortname,stats[c].name,10);
+					strncpy(shortname,stats[c]->name,10);
 
 					newString(&lobbyChatboxMessages,0xFFFFFFFF,"\n***   %s has joined the game   ***\n",shortname);
 
@@ -1460,9 +1476,9 @@ void handleMainMenu(bool mode) {
 					SDLNet_Write32(c,&net_packet->data[0]);
 					for ( x=0; x<MAXPLAYERS; x++ ) {
 						net_packet->data[4+x*(3+16)] = client_classes[x]; // class
-						net_packet->data[5+x*(3+16)] = stats[x].sex; // sex
+						net_packet->data[5+x*(3+16)] = stats[x]->sex; // sex
 						net_packet->data[6+x*(3+16)] = client_disconnected[x]; // connectedness :p
-						strcpy((char *)(&net_packet->data[7+x*(3+16)]),stats[x].name); // name
+						strcpy((char *)(&net_packet->data[7+x*(3+16)]),stats[x]->name); // name
 					}
 					net_packet->address.host = net_clients[c-1].host;
 					net_packet->address.port = net_clients[c-1].port;
@@ -1518,7 +1534,7 @@ void handleMainMenu(bool mode) {
 					sendPacketSafe(net_sock, -1, net_packet, c-1);
 				}
 				char shortname[11] = { 0 };
-				strncpy(shortname,stats[net_packet->data[16]].name,10);
+				strncpy(shortname,stats[net_packet->data[16]]->name,10);
 				newString(&lobbyChatboxMessages,0xFFFFFFFF,language[1376],shortname);
 				continue;
 			}
@@ -1664,15 +1680,15 @@ void handleMainMenu(bool mode) {
 					printlog("connected to server.\n");
 					client_disconnected[clientnum] = FALSE;
 					if ( !loadingsavegame )
-						stats[clientnum].appearance=stats[0].appearance;
+						stats[clientnum]->appearance=stats[0]->appearance;
 						
 					// now set up everybody else
 					for ( c=0; c<MAXPLAYERS; c++ ) {
 						client_disconnected[c] = FALSE;
 						client_classes[c] = net_packet->data[4+c*(3+16)]; // class
-						stats[c].sex = static_cast<sex_t>(net_packet->data[5+c*(3+16)]); // sex
+						stats[c]->sex = static_cast<sex_t>(net_packet->data[5+c*(3+16)]); // sex
 						client_disconnected[c] = net_packet->data[6+c*(3+16)]; // connectedness :p
-						strcpy(stats[c].name,(char *)(&net_packet->data[7+c*(3+16)])); // name
+						strcpy(stats[c]->name,(char *)(&net_packet->data[7+c*(3+16)])); // name
 					}
 
 					// request svFlags
@@ -1760,11 +1776,11 @@ void handleMainMenu(bool mode) {
 				else if (!strncmp((char *)net_packet->data,"NEWPLAYER",9)) {
 					client_disconnected[net_packet->data[9]] = FALSE;
 					client_classes[net_packet->data[9]] = net_packet->data[10];
-					stats[net_packet->data[9]].sex = static_cast<sex_t>(net_packet->data[11]);
-					strcpy(stats[net_packet->data[9]].name,(char *)(&net_packet->data[12]));
+					stats[net_packet->data[9]]->sex = static_cast<sex_t>(net_packet->data[11]);
+					strcpy(stats[net_packet->data[9]]->name,(char *)(&net_packet->data[12]));
 
 					char shortname[11] = { 0 };
-					strncpy(shortname,stats[net_packet->data[9]].name,10);
+					strncpy(shortname,stats[net_packet->data[9]]->name,10);
 					newString(&lobbyChatboxMessages,0xFFFFFFFF,language[1388],shortname);
 					continue;
 				}
@@ -1810,9 +1826,9 @@ void handleMainMenu(bool mode) {
 				
 						// reset multiplayer status
 						multiplayer = SINGLE;
-						stats[0].sex = stats[clientnum].sex;
+						stats[0]->sex = stats[clientnum]->sex;
 						client_classes[0] = client_classes[clientnum];
-						strcpy(stats[0].name,stats[clientnum].name);
+						strcpy(stats[0]->name,stats[clientnum]->name);
 						clientnum = 0;
 						client_disconnected[0]=FALSE;
 						for ( c=1; c<MAXPLAYERS; c++ ) {
@@ -1833,7 +1849,7 @@ void handleMainMenu(bool mode) {
 						#endif
 					} else {
 						char shortname[11] = { 0 };
-						strncpy(shortname,stats[net_packet->data[16]].name,10);
+						strncpy(shortname,stats[net_packet->data[16]]->name,10);
 						newString(&lobbyChatboxMessages,0xFFFFFFFF,language[1376],shortname);
 					}
 					continue;
@@ -1874,10 +1890,10 @@ void handleMainMenu(bool mode) {
 		for( c=0; c<MAXPLAYERS; c++ ) {
 			if( client_disconnected[c] )
 				continue;
-			if( stats[c].sex )
-				ttfPrintTextFormatted(ttf12, subx1+8, suby1 + 80+60*c,"%d:  %s\n    %s\n    %s",c+1,stats[c].name,language[1322],language[1900+client_classes[c]]);
+			if( stats[c]->sex )
+				ttfPrintTextFormatted(ttf12, subx1+8, suby1 + 80+60*c,"%d:  %s\n    %s\n    %s",c+1,stats[c]->name,language[1322],language[1900+client_classes[c]]);
 			else
-				ttfPrintTextFormatted(ttf12, subx1+8, suby1 + 80+60*c,"%d:  %s\n    %s\n    %s",c+1,stats[c].name,language[1321],language[1900+client_classes[c]]);
+				ttfPrintTextFormatted(ttf12, subx1+8, suby1 + 80+60*c,"%d:  %s\n    %s\n    %s",c+1,stats[c]->name,language[1321],language[1900+client_classes[c]]);
 		}
 
 		// select gui element w/ mouse
@@ -2079,7 +2095,7 @@ void handleMainMenu(bool mode) {
 				playSound(238,64);
 
 			char shortname[11] = {0};
-			strncpy(shortname,stats[clientnum].name,10);
+			strncpy(shortname,stats[clientnum]->name,10);
 
 			char msg[LOBBY_CHATBOX_LENGTH+32] = { 0 };
 			snprintf(msg,LOBBY_CHATBOX_LENGTH,"%s: %s",shortname,lobbyChatbox);
@@ -2153,7 +2169,7 @@ void handleMainMenu(bool mode) {
 						sendPacketSafe(net_sock, -1, net_packet, c-1);
 					}
 					char shortname[11] = { 0 };
-					strncpy(shortname,stats[i].name,10);
+					strncpy(shortname,stats[i]->name,10);
 					newString(&lobbyChatboxMessages,0xFFFFFFFF,language[1376],shortname);
 					continue;
 				}
@@ -2196,11 +2212,12 @@ void handleMainMenu(bool mode) {
 			ttfPrintTextFormatted(ttf16, subx1+8, suby1+8, "%s - #%d",language[1390],score_window);
 
 			// draw character window
-			if( players[clientnum] != NULL ) {
-				camera_charsheet.x=players[clientnum]->x/16.0+1;
-				camera_charsheet.y=players[clientnum]->y/16.0-.5;
-				camera_charsheet.z=players[clientnum]->z*2;
-				camera_charsheet.ang=atan2(players[clientnum]->y/16.0-camera_charsheet.y,players[clientnum]->x/16.0-camera_charsheet.x);
+			if (players[clientnum] != nullptr && players[clientnum]->entity != nullptr)
+			{
+				camera_charsheet.x=players[clientnum]->entity->x/16.0+1;
+				camera_charsheet.y=players[clientnum]->entity->y/16.0-.5;
+				camera_charsheet.z=players[clientnum]->entity->z*2;
+				camera_charsheet.ang=atan2(players[clientnum]->entity->y/16.0-camera_charsheet.y,players[clientnum]->entity->x/16.0-camera_charsheet.x);
 				camera_charsheet.vang=PI/24;
 				camera_charsheet.winw=400;
 				camera_charsheet.winy=suby1+32;
@@ -2209,17 +2226,17 @@ void handleMainMenu(bool mode) {
 				pos.x = camera_charsheet.winx; pos.y = camera_charsheet.winy;
 				pos.w = camera_charsheet.winw; pos.h = camera_charsheet.winh;
 				drawRect(&pos,0,255);
-				b=players[clientnum]->flags[BRIGHT];
-				players[clientnum]->flags[BRIGHT]=TRUE;
-				if( !players[clientnum]->flags[INVISIBLE] ) {
+				b=players[clientnum]->entity->flags[BRIGHT];
+				players[clientnum]->entity->flags[BRIGHT]=TRUE;
+				if( !players[clientnum]->entity->flags[INVISIBLE] ) {
 					double ofov = fov;
 					fov = 50;
-					glDrawVoxel(&camera_charsheet,players[clientnum],REALCOLORS);
+					glDrawVoxel(&camera_charsheet,players[clientnum]->entity,REALCOLORS);
 					fov = ofov;
 				}
-				players[clientnum]->flags[BRIGHT]=b;
+				players[clientnum]->entity->flags[BRIGHT]=b;
 				c=0;
-				for( node=players[clientnum]->children.first; node!=NULL; node=node->next ) {
+				for( node=players[clientnum]->entity->children.first; node!=NULL; node=node->next ) {
 					if( c==0 ) {
 						c++;
 					}
@@ -2240,14 +2257,14 @@ void handleMainMenu(bool mode) {
 			// print name and class
 			if( victory ) {
 				ttfPrintTextFormatted(ttf16,subx1+448,suby1+40,language[1391]);
-				ttfPrintTextFormatted(ttf16,subx1+448,suby1+56,"%s",stats[clientnum].name);
+				ttfPrintTextFormatted(ttf16,subx1+448,suby1+56,"%s",stats[clientnum]->name);
 				if( victory==1 )
 					ttfPrintTextFormatted(ttf16,subx1+448,suby1+72,language[1392]);
 				else if( victory==2 )
 					ttfPrintTextFormatted(ttf16,subx1+448,suby1+72,language[1393]);
 			} else {
 				ttfPrintTextFormatted(ttf16,subx1+448,suby1+40,language[1394]);
-				ttfPrintTextFormatted(ttf16,subx1+448,suby1+56,"%s",stats[clientnum].name);
+				ttfPrintTextFormatted(ttf16,subx1+448,suby1+56,"%s",stats[clientnum]->name);
 
 				char classname[32];
 				strcpy(classname,language[1900+client_classes[0]]);
@@ -2263,17 +2280,17 @@ void handleMainMenu(bool mode) {
 			}
 
 			// print character stats
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+128,language[359],stats[clientnum].LVL,language[1900+client_classes[clientnum]]);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+140,language[1396],stats[clientnum].EXP);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+152,language[1397],stats[clientnum].GOLD);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+128,language[359],stats[clientnum]->LVL,language[1900+client_classes[clientnum]]);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+140,language[1396],stats[clientnum]->EXP);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+152,language[1397],stats[clientnum]->GOLD);
 			ttfPrintTextFormatted(ttf12,subx1+456,suby1+164,language[361],currentlevel);
 
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+188,language[1398],statGetSTR(&stats[clientnum]),stats[clientnum].STR);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+200,language[1399],statGetDEX(&stats[clientnum]),stats[clientnum].DEX);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+212,language[1400],statGetCON(&stats[clientnum]),stats[clientnum].CON);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+224,language[1401],statGetINT(&stats[clientnum]),stats[clientnum].INT);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+236,language[1402],statGetPER(&stats[clientnum]),stats[clientnum].PER);
-			ttfPrintTextFormatted(ttf12,subx1+456,suby1+248,language[1403],statGetCHR(&stats[clientnum]),stats[clientnum].CHR);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+188,language[1398],statGetSTR(stats[clientnum]),stats[clientnum]->STR);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+200,language[1399],statGetDEX(stats[clientnum]),stats[clientnum]->DEX);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+212,language[1400],statGetCON(stats[clientnum]),stats[clientnum]->CON);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+224,language[1401],statGetINT(stats[clientnum]),stats[clientnum]->INT);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+236,language[1402],statGetPER(stats[clientnum]),stats[clientnum]->PER);
+			ttfPrintTextFormatted(ttf12,subx1+456,suby1+248,language[1403],statGetCHR(stats[clientnum]),stats[clientnum]->CHR);
 
 			// time
 			Uint32 sec = (completionTime/TICKS_PER_SECOND)%60;
@@ -2359,13 +2376,13 @@ void handleMainMenu(bool mode) {
 			swornenemies[SHOPKEEPER][HUMAN] = FALSE;
 			monsterally[SHOPKEEPER][HUMAN] = TRUE;
 
-			// setup game
+			// setup game //TODO: Move into a function startGameStuff() or something.
 			entity_uids=1;
 			loading=TRUE;
 			darkmap=FALSE;
 			selected_spell=NULL;
 			shootmode = TRUE;
-			currentlevel = 0;
+			currentlevel = startfloor;
 			secretlevel = FALSE;
 			victory = 0;
 			completionTime = 0;
@@ -2414,7 +2431,7 @@ void handleMainMenu(bool mode) {
 
 				// reset class loadout
 				if( !loadingsavegame ) {
-					clearStats(&stats[0]);
+					stats[0]->clearStats();
 					initClass(0);
 				} else {
 					loadGame(0);
@@ -2470,26 +2487,27 @@ void handleMainMenu(bool mode) {
 							node_t *tempNode = list_Node(followers,c);
 							if( tempNode ) {
 								list_t *tempFollowers = (list_t *)tempNode->element;
-								if( players[c] && !client_disconnected[c] ) {
+								if (players[c] && players[c]->entity && !client_disconnected[c])
+								{
 									node_t *node;
 									for( node=tempFollowers->first; node!=NULL; node=node->next ) {
-										stat_t *tempStats = (stat_t *)node->element;
-										Entity *monster = summonMonster(tempStats->type,players[c]->x,players[c]->y);
+										Stat *tempStats = (Stat *)node->element;
+										Entity *monster = summonMonster(tempStats->type, players[c]->entity->x, players[c]->entity->y);
 										if( monster ) {
 											monster->skill[3] = 1; // to mark this monster partially initialized
 											list_RemoveNode(monster->children.last);
 
 											node_t *newNode = list_AddNodeLast(&monster->children);
-											newNode->element = copyStats(tempStats);
-											newNode->deconstructor = &statDeconstructor;
-											newNode->size = sizeof(stat_t);
+											newNode->element = tempStats->copyStats();
+											//newNode->deconstructor = &tempStats->~Stat;
+											newNode->size = sizeof(tempStats);
 
-											stat_t *monsterStats = (stat_t *)newNode->element;
-											monsterStats->leader_uid = players[c]->uid;
+											Stat *monsterStats = (Stat *)newNode->element;
+											monsterStats->leader_uid = players[c]->entity->uid;
 											if( !monsterally[HUMAN][monsterStats->type] )
 												monster->flags[USERFLAG2]=TRUE;
 
-											newNode = list_AddNodeLast(&stats[c].FOLLOWERS);
+											newNode = list_AddNodeLast(&stats[c]->FOLLOWERS);
 											newNode->deconstructor = &defaultDeconstructor;
 											Uint32 *myuid = (Uint32 *) malloc(sizeof(Uint32));
 											newNode->element = myuid;
@@ -2526,7 +2544,7 @@ void handleMainMenu(bool mode) {
 			
 				// initialize class
 				if( !loadingsavegame ) {
-					clearStats(&stats[clientnum]);
+					stats[clientnum]->clearStats();
 					initClass(clientnum);
 				} else {
 					loadGame(clientnum);
@@ -2593,7 +2611,7 @@ void handleMainMenu(bool mode) {
 				list_FreeAll(&safePacketsReceived[c]);
 			deleteAllNotificationMessages();
 			for(c=0;c<MAXPLAYERS;c++) {
-				list_FreeAll(&stats[c].FOLLOWERS);
+				list_FreeAll(&stats[c]->FOLLOWERS);
 			}
 			list_FreeAll(&removedEntities);
 			list_FreeAll(&chestInv);
@@ -2624,7 +2642,7 @@ void handleMainMenu(bool mode) {
 			if( victory ) {
 				int k = 0;
 				for( c=0; c<MAXPLAYERS; c++ ) {
-					if( players[c] )
+					if (players[c] && players[c]->entity)
 						k++;
 				}
 				if( k>=2 )
@@ -2709,9 +2727,9 @@ void handleMainMenu(bool mode) {
 				list_FreeAll(&safePacketsReceived[c]);
 			deleteAllNotificationMessages();
 			for(c=0;c<MAXPLAYERS;c++) {
-				freePlayerEquipment(c);
-				list_FreeAll(&stats[c].inventory);
-				list_FreeAll(&stats[c].FOLLOWERS);
+				stats[c]->freePlayerEquipment();
+				list_FreeAll(&stats[c]->inventory);
+				list_FreeAll(&stats[c]->FOLLOWERS);
 			}
 			list_FreeAll(&removedEntities);
 			list_FreeAll(&chestInv);
@@ -2722,12 +2740,12 @@ void handleMainMenu(bool mode) {
 					client_disconnected[c]=TRUE;
 				else
 					client_disconnected[c]=FALSE;
-				players[c]=NULL;
-				stats[c].sex=static_cast<sex_t>(0);
-				stats[c].appearance=0;
-				strcpy(stats[c].name,"");
-				stats[c].type = HUMAN;
-				clearStats(&stats[c]);
+				players[c]->entity = nullptr; //TODO: PLAYERSWAP VERIFY. Need to do anything else?
+				stats[c]->sex=static_cast<sex_t>(0);
+				stats[c]->appearance=0;
+				strcpy(stats[c]->name,"");
+				stats[c]->type = HUMAN;
+				stats[c]->clearStats();
 				entitiesToDelete[c].first=NULL;
 				entitiesToDelete[c].last=NULL;
 				if( c==0 )
@@ -3192,7 +3210,7 @@ void openGameoverWindow() {
 			strcat(subtext,language[1137]);
 
 		// identify all inventory items
-		for( node=stats[clientnum].inventory.first; node!=NULL; node=node->next ) {
+		for( node=stats[clientnum]->inventory.first; node!=NULL; node=node->next ) {
 			Item *item = (Item *)node->element;
 			item->identified = TRUE;
 		}
@@ -3219,9 +3237,11 @@ void openGameoverWindow() {
 		
 		bool survivingPlayer=FALSE;
 		int c;
-		for( c=0; c<MAXPLAYERS; c++ ) {
-			if( !client_disconnected[c] && players[c] ) {
-				survivingPlayer=TRUE;
+		for (c = 0; c < MAXPLAYERS; c++)
+		{
+			if (!client_disconnected[c] && players[c]->entity)
+			{
+				survivingPlayer = TRUE;
 				break;
 			}
 		}
@@ -3289,7 +3309,8 @@ void openSettingsWindow() {
 	settings_nohud = nohud;
 	settings_auto_hotbar_new_items = auto_hotbar_new_items;
 	settings_disable_messages = disable_messages;
-	
+	settings_right_click_protect = right_click_protect;
+
 	// create settings window
 	settings_window = TRUE;
 	subwindow = 1;
@@ -3674,12 +3695,12 @@ void buttonCloseSubwindow(button_t *my) {
 		return;
 	if( score_window ) {
 		// reset class loadout
-		stats[0].sex=static_cast<sex_t>(0);
-		stats[0].appearance=0;
-		strcpy(stats[0].name,"");
-		stats[0].type = HUMAN;
+		stats[0]->sex=static_cast<sex_t>(0);
+		stats[0]->appearance=0;
+		strcpy(stats[0]->name,"");
+		stats[0]->type = HUMAN;
 		client_classes[0] = 0;
-		clearStats(&stats[0]);
+		stats[0]->clearStats();
 		initClass(0);
 	}
 	rebindkey=-1;
@@ -3726,15 +3747,16 @@ void buttonContinue(button_t *my) {
 	if( ticks-charcreation_ticks<TICKS_PER_SECOND/10 )
 		return;
 	charcreation_ticks = ticks;
-	if( charcreation_step==4 && !strcmp(stats[0].name,"") )
+	if( charcreation_step==4 && !strcmp(stats[0]->name,"") )
 		return;
 	
 	charcreation_step++;
 	if( charcreation_step==4 ) {
-		inputstr = stats[0].name;
+		inputstr = stats[0]->name;
 		SDL_StartTextInput();
 	} else if( charcreation_step==5 ) {
 		if( SDL_IsTextInputActive() ) {
+			lastname = (string)stats[0]->name;
 			SDL_StopTextInput();
 		}
 		#ifdef STEAMWORKS
@@ -3818,9 +3840,11 @@ void buttonBack(button_t *my) {
 	charcreation_step--;
 	if (charcreation_step < 4)
 		playing_random_char = FALSE;
-	if( charcreation_step==3 )
+	if (charcreation_step == 3) {
+		// If we've backed out, save what name was input for later
+		lastname = (string)inputstr;
 		SDL_StopTextInput();
-	else if( charcreation_step==0 )
+	} else if( charcreation_step==0 )
 		buttonCloseSubwindow(my);
 }
 
@@ -4182,18 +4206,18 @@ void buttonJoinLobby(button_t *my) {
 	// send join request
 	strcpy((char *)net_packet->data,"BARONY_JOIN_REQUEST");
 	if( loadingsavegame ) {
-		strncpy((char *)net_packet->data+19,stats[getSaveGameClientnum()].name,22);
+		strncpy((char *)net_packet->data+19,stats[getSaveGameClientnum()]->name,22);
 		SDLNet_Write32((Uint32)client_classes[getSaveGameClientnum()],&net_packet->data[42]);
-		SDLNet_Write32((Uint32)stats[getSaveGameClientnum()].sex,&net_packet->data[46]);
-		SDLNet_Write32((Uint32)stats[getSaveGameClientnum()].appearance,&net_packet->data[50]);
+		SDLNet_Write32((Uint32)stats[getSaveGameClientnum()]->sex,&net_packet->data[46]);
+		SDLNet_Write32((Uint32)stats[getSaveGameClientnum()]->appearance,&net_packet->data[50]);
 		strcpy((char *)net_packet->data+54,VERSION);
 		net_packet->data[62] = 0;
 		net_packet->data[63] = getSaveGameClientnum();
 	} else {
-		strncpy((char *)net_packet->data+19,stats[0].name,22);
+		strncpy((char *)net_packet->data+19,stats[0]->name,22);
 		SDLNet_Write32((Uint32)client_classes[0],&net_packet->data[42]);
-		SDLNet_Write32((Uint32)stats[0].sex,&net_packet->data[46]);
-		SDLNet_Write32((Uint32)stats[0].appearance,&net_packet->data[50]);
+		SDLNet_Write32((Uint32)stats[0]->sex,&net_packet->data[46]);
+		SDLNet_Write32((Uint32)stats[0]->appearance,&net_packet->data[50]);
 		strcpy((char *)net_packet->data+54,VERSION);
 		net_packet->data[62] = 0;
 		net_packet->data[63] = 0;
@@ -4243,7 +4267,7 @@ void buttonStartServer(button_t *my) {
 	for( c=1; c<MAXPLAYERS; c++ ) {
 		if( !client_disconnected[c] ) {
 			if( !loadingsavegame || !intro ) {
-				clearStats(&stats[c]);
+				stats[c]->clearStats();
 				initClass(c);
 			} else {
 				loadGame(c);
@@ -4269,7 +4293,8 @@ void buttonStartServer(button_t *my) {
 // opens the steam dialog to invite friends
 #ifdef STEAMWORKS
 void buttonInviteFriends(button_t *my) {
-	SteamFriends()->ActivateGameOverlayInviteDialog(*static_cast<CSteamID*>(currentLobby));
+	if (SteamUser()->BLoggedOn())
+		SteamFriends()->ActivateGameOverlayInviteDialog(*static_cast<CSteamID*>(currentLobby));
 	return;
 }
 #endif
@@ -4302,9 +4327,9 @@ void buttonDisconnect(button_t *my) {
 	
 	// reset multiplayer status
 	multiplayer = SINGLE;
-	stats[0].sex = stats[clientnum].sex;
+	stats[0]->sex = stats[clientnum]->sex;
 	client_classes[0] = client_classes[clientnum];
-	strcpy(stats[0].name,stats[clientnum].name);
+	strcpy(stats[0]->name,stats[clientnum]->name);
 	clientnum = 0;
 	client_disconnected[0]=FALSE;
 	for( c=1; c<MAXPLAYERS; c++ ) {
@@ -4402,6 +4427,7 @@ void buttonSettingsAccept(button_t *my) {
 
 	auto_hotbar_new_items = settings_auto_hotbar_new_items;
 	disable_messages = settings_disable_messages;
+	right_click_protect = settings_right_click_protect;
 
 	// we need to reposition the settings window now.
 	buttonCloseSubwindow(my);
@@ -4558,12 +4584,12 @@ void buttonOpenCharacterCreationWindow(button_t *my) {
 
 	// reset class loadout
 	clientnum=0;
-	stats[0].sex=static_cast<sex_t>(0);
-	stats[0].appearance=0;
-	strcpy(stats[0].name,"");
-	stats[0].type = HUMAN;
+	stats[0]->sex=static_cast<sex_t>(0);
+	stats[0]->appearance=0;
+	strcpy(stats[0]->name,"");
+	stats[0]->type = HUMAN;
 	client_classes[0] = 0;
-	clearStats(&stats[0]);
+	stats[0]->clearStats();
 	initClass(0);
 	
 	// close current window
@@ -4629,12 +4655,15 @@ void buttonLoadGame(button_t *button) {
 	int mul = getSaveGameType();
 
 	if( mul==DIRECTSERVER ) {
+		directConnect = true;
 		buttonHostMultiplayer(button);
 	} else if( mul==DIRECTCLIENT ) {
+		directConnect = true;
 		buttonJoinMultiplayer(button);
 	} else if( mul==SINGLE ) {
 		buttonStartSingleplayer(button);
 	} else {
+		directConnect = false;
 		#ifdef STEAMWORKS
 		if( mul==SERVER ) {
 			buttonHostMultiplayer(button);
@@ -4695,9 +4724,9 @@ void buttonLoadGame(button_t *button) {
 void buttonRandomCharacter(button_t *my) {
 	playing_random_char = TRUE;
 	charcreation_step = 4;
-	stats[0].sex = static_cast<sex_t>(rand()%2);
+	stats[0]->sex = static_cast<sex_t>(rand()%2);
 	client_classes[0] = rand()%NUMCLASSES;
-	clearStats(&stats[0]);
+	stats[0]->clearStats();
 	initClass(0);
-	stats[0].appearance = rand()%NUMAPPEARANCES;
+	stats[0]->appearance = rand()%NUMAPPEARANCES;
 }

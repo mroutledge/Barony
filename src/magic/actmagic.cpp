@@ -16,11 +16,12 @@
 #include "../interface/interface.hpp"
 #include "../sound.hpp"
 #include "../items.hpp"
-#include "magic.hpp"
 #include "../monster.hpp"
 #include "../net.hpp"
 #include "../collision.hpp"
 #include "../paths.hpp"
+#include "../player.hpp"
+#include "magic.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -201,7 +202,7 @@ void actMagiclightBall(Entity *my) {
 
 	caster = uidToEntity(spell->caster);
 	if (caster) {
-		stat_t *stats = caster->getStats();
+		Stat *stats = caster->getStats();
 		if (stats) {
 			if (stats->HP <= 0) {
 				if( my->light != NULL ) {
@@ -226,7 +227,7 @@ void actMagiclightBall(Entity *my) {
 		int i = 0;
 		int player = -1;
 		for (i = 0; i < 4; ++i) {
-			if (players[i] == caster)
+			if (players[i]->entity == caster)
 				player = i;
 		}
 		if (player > -1 && multiplayer == SERVER) {
@@ -263,7 +264,7 @@ void actMagiclightBall(Entity *my) {
 						int i = 0;
 						int player = -1;
 						for (i = 0; i < 4; ++i) {
-							if (players[i] == caster)
+							if (players[i]->entity == caster)
 								player = i;
 						}
 						if (player > -1 && multiplayer == SERVER) {
@@ -511,7 +512,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 				//element = (spellElement_t *) element->elements->first->element;
 				element = (spellElement_t *)node->element;
 				//if (hit.entity != NULL) {
-				stat_t *hitstats = NULL;
+				Stat *hitstats = NULL;
 				int player=-1;
 				if (hit.entity) {
 					hitstats = hit.entity->getStats();
@@ -546,7 +547,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 						for( node=map.entities->first; node!=NULL; node=node->next ) {
 							entity = (Entity *)node->element;
 							if( entity->behavior == &actMonster && entity != ohitentity ) {
-								stat_t *buddystats = entity->getStats();
+								Stat *buddystats = entity->getStats();
 								if( buddystats != NULL ) {
 									if( hit.entity && hit.entity->checkFriend(entity) ) { //TODO: hit.entity->checkFriend() without first checking if it's NULL crashes because hit.entity turns to NULL somewhere along the line. It looks like ohitentity preserves that value though, so....uh...ya, I don't know.
 										if( entity->skill[0] == 0 ) { // monster is waiting
@@ -576,7 +577,7 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 						for( tempNode=map.entities->first; tempNode!=NULL; tempNode=tempNode->next ) {
 							Entity *tempEntity = (Entity *)tempNode->element;
 							if( tempEntity->behavior==&actMonster ) {
-								stat_t *stats = tempEntity->getStats();
+								Stat *stats = tempEntity->getStats();
 								if( stats ) {
 									if( stats->type==DEVIL ) {
 										founddevil=TRUE;
@@ -589,17 +590,20 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 							reflection = 3;
 					}
 					if( !reflection ) {
-						if( hitstats->amulet ) {
-							if( hitstats->amulet->type==AMULET_MAGICREFLECTION )
-								reflection=2;
+						if (hitstats->amulet)
+						{
+							if (hitstats->amulet->type == AMULET_MAGICREFLECTION)
+								reflection = 2;
 						}
-						if( hitstats->cloak ) {
-							if( hitstats->cloak->type==CLOAK_MAGICREFLECTION )
-								reflection=1;
+						if (hitstats->cloak)
+						{
+							if (hitstats->cloak->type == CLOAK_MAGICREFLECTION)
+								reflection = 1;
 						}
-						if( hitstats->shield ) {
-							if( hitstats->shield->type==STEEL_SHIELD_RESISTANCE && hitstats->defending )
-								reflection=-1;
+						if (hitstats->shield)
+						{
+							if (hitstats->shield->type == STEEL_SHIELD_RESISTANCE && hitstats->defending)
+								reflection = 3;
 						}
 					}
 				}
@@ -665,17 +669,20 @@ void actMagicMissile(Entity *my) { //TODO: Verify this function.
 								playSoundEntity(hit.entity,76,64);
 							}
 						}
-						if( player>0 && multiplayer==SERVER ) {
+						if (player > 0 && multiplayer == SERVER)
+						{
 							strcpy((char *)net_packet->data,"ARMR");
-							net_packet->data[4]=armornum;
-							if( reflection==1 )
-								net_packet->data[5]=hitstats->amulet->status;
+							net_packet->data[4] = armornum;
+							if (reflection == 1)
+								net_packet->data[5] = hitstats->cloak->status;
+							else if (reflection == 2)
+								net_packet->data[5] = hitstats->amulet->status;
 							else
-								net_packet->data[5]=hitstats->amulet->status;
+								net_packet->data[5] = hitstats->shield->status;
 							net_packet->address.host = net_clients[player-1].host;
 							net_packet->address.port = net_clients[player-1].port;
 							net_packet->len = 6;
-							sendPacketSafe(net_sock, -1, net_packet, player-1);
+							sendPacketSafe(net_sock, -1, net_packet, player - 1);
 						}
 					}
 					return;

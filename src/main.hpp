@@ -17,6 +17,10 @@
 
 #include <algorithm> //For min and max, because the #define breaks everything in c++.
 
+#include <string>
+//using namespace std; //For C++ strings //This breaks messages on certain systems, due to template<class _CharT> class std::__cxx11::messages
+using std::string; //Instead of including an entire namespace, please explicitly include only the parts you need, and check for conflicts as reasonably possible.
+
 #ifdef _WIN32
 #define WINDOWS
 #else
@@ -343,10 +347,8 @@ extern Uint32 lastkeypressed;
 extern Sint8 keystatus[512];
 extern char *inputstr;
 extern int inputlen;
+extern string lastname;
 extern Sint8 mousestatus[6];
-extern Sint32 mousex, mousey;
-extern Sint32 omousex, omousey;
-extern Sint32 mousexrel, mouseyrel;
 extern Uint32 cursorflash;
 extern Sint32 camx, camy;
 extern Sint32 newcamx, newcamy;
@@ -357,7 +359,6 @@ extern int rscale;
 extern double vidgamma;
 extern bool softwaremode;
 extern double *zbuffer;
-extern Entity *selectedEntity;
 extern Sint32 *lightmap;
 extern bool *vismap;
 extern Entity **clickmap;

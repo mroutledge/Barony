@@ -18,8 +18,9 @@
 #include "sound.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initSkeleton(Entity *my, stat_t *myStats) {
+void initSkeleton(Entity *my, Stat *myStats) {
 	int c;
 	node_t *node;
 
@@ -460,7 +461,7 @@ void skeletonDie(Entity *my) {
 
 #define SKELETONWALKSPEED .13
 
-void skeletonMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void skeletonMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity = NULL, *entity2 = NULL;
 	Entity *rightbody = NULL;

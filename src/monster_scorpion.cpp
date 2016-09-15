@@ -18,8 +18,9 @@
 #include "net.hpp"
 #include "items.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initScorpion(Entity *my, stat_t *myStats) {
+void initScorpion(Entity *my, Stat *myStats) {
 	int c;
 	
 	my->flags[UPDATENEEDED]=TRUE;
@@ -189,7 +190,7 @@ void scorpionAnimate(Entity *my, double dist) {
 
 	// set invisibility
 	if( multiplayer != CLIENT ) {
-		stat_t *myStats = my->getStats();
+		Stat *myStats = my->getStats();
 		if( myStats->EFFECTS[EFF_INVISIBLE] == TRUE ) {
 			my->flags[INVISIBLE] = TRUE;
 			my->flags[BLOCKSIGHT] = FALSE;

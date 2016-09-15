@@ -18,8 +18,9 @@
 #include "sound.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initShopkeeper(Entity *my, stat_t *myStats) {
+void initShopkeeper(Entity *my, Stat *myStats) {
 	int c;
 	node_t *node;
 
@@ -381,7 +382,7 @@ void shopkeeperDie(Entity *my) {
 
 #define SHOPKEEPERWALKSPEED .15
 
-void shopkeeperMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void shopkeeperMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity = NULL;
 	Entity *rightbody = NULL;

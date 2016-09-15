@@ -20,6 +20,7 @@
 #include <steam/steam_api.h>
 #include "steam.hpp"
 #endif
+#include "player.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -478,6 +479,11 @@ int loadLanguage(char *lang) {
 
 	// allocate new language strings
 	language = (char **) calloc(NUMLANGENTRIES,sizeof(char *));
+
+	// Allocate an emptry string for each possible language entry
+	for (c = 0; c < NUMLANGENTRIES; c++) {
+		language[c] = (char *)calloc(1, sizeof(char));
+	}
 
 	// read file
 	Uint32 line;
@@ -1674,13 +1680,16 @@ bool initVideo() {
 	SDL_DestroyWindow(screen);
 	screen = NULL;
 	#endif
+	int screen_width = xres;
+	if (splitscreen)
+		screen_width *= 2;
 	if( !screen ) {
-		if((screen=SDL_CreateWindow( window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, xres, yres, flags )) == NULL) {
+		if((screen=SDL_CreateWindow( window_title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, yres, flags )) == NULL) {
 			printlog("failed to set video mode.\n");
 			return FALSE;
 		}
 	} else {
-		SDL_SetWindowSize(screen,xres,yres);
+		SDL_SetWindowSize(screen,screen_width,yres);
 		if( fullscreen )
 			SDL_SetWindowFullscreen(screen,SDL_WINDOW_FULLSCREEN);
 		else

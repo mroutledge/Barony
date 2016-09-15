@@ -18,6 +18,7 @@
 #include "net.hpp"
 #include "monster.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
 #define BOULDER_STOPPED my->skill[0]
 #define BOULDER_AMBIENCE my->skill[1]
@@ -42,7 +43,7 @@ int boulderCheckAgainstEntity(Entity *my, Entity *entity) {
 
 	if( entity->behavior == &actPlayer || entity->behavior == &actMonster ) {
 		if( entityInsideEntity( my, entity ) ) {
-			stat_t *stats = entity->getStats();
+			Stat *stats = entity->getStats();
 			if( stats ) {
 				if( entity->behavior==&actPlayer ) {
 					Uint32 color = SDL_MapRGB(mainsurface->format,255,0,0);
@@ -271,23 +272,24 @@ void actBoulder(Entity *my) {
 			for(i=0;i<MAXPLAYERS;i++) {
 				if( (i==0 && selectedEntity==my) || (client_selected[i]==my) ) {
 					if(inrange[i]) {
-						if( statGetSTR(&stats[i])<5 ) {
+						if( statGetSTR(stats[i])<5 ) {
 							messagePlayer(i,language[456]);
 						} else {
-							if( players[i] ) {
+							if (players[i] && players[i]->entity)
+							{
 								playSoundEntity(my, 151, 128);
 								BOULDER_ROLLING=1;
 								my->x = floor(my->x/16)*16+8;
 								my->y = floor(my->y/16)*16+8;
 								BOULDER_DESTX=(int)(my->x/16)*16+8;
 								BOULDER_DESTY=(int)(my->y/16)*16+8;
-								if( (int)(players[i]->x/16) < (int)(my->x/16) ) {
+								if( (int)(players[i]->entity->x/16) < (int)(my->x/16) ) {
 									BOULDER_ROLLDIR=0; // east
-								} else if( (int)(players[i]->y/16) < (int)(my->y/16) ) {
+								} else if( (int)(players[i]->entity->y/16) < (int)(my->y/16) ) {
 									BOULDER_ROLLDIR=1; // south
-								} else if( (int)(players[i]->x/16) > (int)(my->x/16) ) {
+								} else if( (int)(players[i]->entity->x/16) > (int)(my->x/16) ) {
 									BOULDER_ROLLDIR=2; // west
-								} else if( (int)(players[i]->y/16) > (int)(my->y/16) ) {
+								} else if( (int)(players[i]->entity->y/16) > (int)(my->y/16) ) {
 									BOULDER_ROLLDIR=3; // north
 								}
 								switch( BOULDER_ROLLDIR ) {

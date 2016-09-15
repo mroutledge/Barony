@@ -17,6 +17,7 @@
 #include "items.hpp"
 #include "sound.hpp"
 #include "net.hpp"
+#include "player.hpp"
 
 #define CHEST_INIT my->skill[0]
 #define CHEST_STATUS my->skill[1] //0 = closed. 1 = open.
@@ -354,8 +355,8 @@ void actChest(Entity *my) {
 	}
 
 	if (CHEST_STATUS == 1) {
-		if (players[CHEST_OPENER]) {
-			unsigned int distance = sqrt(pow(my->x - players[CHEST_OPENER]->x, 2) + pow(my->y - players[CHEST_OPENER]->y, 2));
+		if (players[CHEST_OPENER] && players[CHEST_OPENER]->entity) {
+			unsigned int distance = sqrt(pow(my->x - players[CHEST_OPENER]->entity->x, 2) + pow(my->y - players[CHEST_OPENER]->entity->y, 2));
 			if (distance > TOUCHRANGE) {
 				my->closeChest();
 			}
@@ -601,7 +602,7 @@ void Entity::addItemToChest(Item *item) {
 }
 
 void Entity::addItemToChestFromInventory(int player, Item *item, bool all) {
-	if (!item || !players[player])
+	if (!item || !players[player] || !players[player]->entity)
 		return;
 
 	if (itemCategory(item) == SPELL_CAT)
@@ -629,12 +630,12 @@ void Entity::addItemToChestFromInventory(int player, Item *item, bool all) {
 
 	// unequip the item
 	if( item->count <= 1 || all) {
-		Item **slot = itemSlot(&stats[player],item);
+		Item **slot = itemSlot(stats[player],item);
 		if( slot != NULL )
 			*slot = NULL;
 	}
 	if( item->node != NULL ) {
-		if( item->node->list==&stats[player].inventory ) {
+		if( item->node->list==&stats[player]->inventory ) {
 			if (!all) {
 				item->count--;
 				if( item->count <= 0 )

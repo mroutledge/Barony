@@ -16,6 +16,7 @@
 #include "../interface/interface.hpp"
 #include "../sound.hpp"
 #include "../items.hpp"
+#include "../player.hpp"
 #include "magic.hpp"
 
 //The spellcasting animation stages:
@@ -56,7 +57,7 @@ void fireOffSpellAnimation(spellcasting_animation_manager_t* animation_manager, 
 	}
 
 	playSoundEntity(caster, 170, 128 );
-	stat_t *stat = caster->getStats();
+	Stat *stat = caster->getStats();
 
 	//Save these two very important pieces of data.
 	animation_manager->caster = caster->uid;
@@ -128,8 +129,9 @@ void actLeftHandMagic(Entity *my)
 		my->focalz = -1.5;
 	}
 
-	if( players[clientnum]==NULL ) {
-		magicLeftHand = NULL;
+	if (players[clientnum] == nullptr || players[clientnum]->entity == nullptr)
+	{
+		magicLeftHand = nullptr;
 		spellcastingAnimationManager_deactivate(&cast_animation);
 		list_RemoveNode(my->mynode);
 		return;
@@ -138,7 +140,7 @@ void actLeftHandMagic(Entity *my)
 	//Set the initial values. (For the particle spray)
 	my->x = 8;
 	my->y = -3;
-	my->z = (camera.z *.5 - players[clientnum]->z) + 7;
+	my->z = (camera.z *.5 - players[clientnum]->entity->z) + 7;
 	my->z -= 4;
 	my->yaw = HANDMAGIC_YAW - camera_shakex2;
 	double defaultpitch = (0-6.f) / PI;
@@ -147,34 +149,34 @@ void actLeftHandMagic(Entity *my)
 
 	//Sprite
 	bool noGloves=FALSE;
-	if( stats[clientnum].gloves == NULL ) {
+	if( stats[clientnum]->gloves == NULL ) {
 		noGloves=TRUE;
 	} else {
-		if( stats[clientnum].gloves->type == GLOVES || stats[clientnum].gloves->type == GLOVES_DEXTERITY ) {
-			my->sprite = 136 + stats[clientnum].sex;
-		} else if( stats[clientnum].gloves->type == BRACERS || stats[clientnum].gloves->type == BRACERS_CONSTITUTION ) {
-			my->sprite = 327 + stats[clientnum].sex;
-		} else if( stats[clientnum].gloves->type == GAUNTLETS || stats[clientnum].gloves->type == GAUNTLETS_STRENGTH ) {
-			my->sprite = 144 + stats[clientnum].sex;
+		if( stats[clientnum]->gloves->type == GLOVES || stats[clientnum]->gloves->type == GLOVES_DEXTERITY ) {
+			my->sprite = 136 + stats[clientnum]->sex;
+		} else if( stats[clientnum]->gloves->type == BRACERS || stats[clientnum]->gloves->type == BRACERS_CONSTITUTION ) {
+			my->sprite = 327 + stats[clientnum]->sex;
+		} else if( stats[clientnum]->gloves->type == GAUNTLETS || stats[clientnum]->gloves->type == GAUNTLETS_STRENGTH ) {
+			my->sprite = 144 + stats[clientnum]->sex;
 		} else {
 			noGloves = TRUE;
 		}
 	}
 	if( noGloves ) {
-		if( stats[clientnum].appearance/6==0 ) {
-			if( stats[clientnum].sex==FEMALE ) {
+		if( stats[clientnum]->appearance/6==0 ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 122;
 			} else {
 				my->sprite = 110;
 			}
-		} else if( stats[clientnum].appearance/6==1 ) {
-			if( stats[clientnum].sex==FEMALE ) {
+		} else if( stats[clientnum]->appearance/6==1 ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 351;
 			} else {
 				my->sprite = 338;
 			}
 		} else {
-			if( stats[clientnum].sex==FEMALE ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 377;
 			} else {
 				my->sprite = 364;
@@ -185,13 +187,14 @@ void actLeftHandMagic(Entity *my)
 	bool wearingring = FALSE;
 
 	//Select model
-	if (stats[clientnum].ring != NULL)
-		if (stats[clientnum].ring->type == RING_INVISIBILITY)
+	if (stats[clientnum]->ring != NULL)
+		if (stats[clientnum]->ring->type == RING_INVISIBILITY)
 			wearingring = TRUE;
-	if (stats[clientnum].cloak != NULL)
-		if (stats[clientnum].cloak->type == CLOAK_INVISIBILITY)
+	if (stats[clientnum]->cloak != NULL)
+		if (stats[clientnum]->cloak->type == CLOAK_INVISIBILITY)
 			wearingring = TRUE;
-	if (players[clientnum]->skill[3] == 1 || stats[clientnum].EFFECTS[EFF_INVISIBLE] == TRUE || wearingring ) { // debug cam or player invisible
+	if (players[clientnum]->entity->skill[3] == 1 || stats[clientnum]->EFFECTS[EFF_INVISIBLE] == TRUE || wearingring ) // debug cam or player invisible
+	{
 		my->flags[INVISIBLE] = TRUE;
 	}
 
@@ -223,7 +226,7 @@ void actLeftHandMagic(Entity *my)
 					//Time to consume mana and reset the ticker!
 					cast_animation.consume_timer = cast_animation.consume_interval;
 					if (multiplayer == SINGLE) {
-						players[clientnum]->drainMP(1);
+						players[clientnum]->entity->drainMP(1);
 					}
 					cast_animation.mana_left--;
 				}
@@ -252,7 +255,7 @@ void actLeftHandMagic(Entity *my)
 	}
 
 	//Final position code.
-	if( players[clientnum] == NULL )
+	if (players[clientnum] == nullptr || players[clientnum]->entity == nullptr)
 		return;
 	//double defaultpitch = PI / 8.f;
 	//double defaultpitch = 0;
@@ -263,8 +266,8 @@ void actLeftHandMagic(Entity *my)
 	//my->y = 3 + HUDWEAPON_MOVEY;
 	my->y = -3;
 	my->y += cast_animation.lefthand_movey;
-	//my->z = (camera.z*.5-players[clientnum]->z)+7+HUDWEAPON_MOVEZ;
-	my->z = (camera.z *.5 - players[clientnum]->z) + 7;
+	//my->z = (camera.z*.5-players[clientnum]->z)+7+HUDWEAPON_MOVEZ; //TODO: NOT a PLAYERSWAP
+	my->z = (camera.z *.5 - players[clientnum]->entity->z) + 7;
 	my->z -= 4;
 	my->yaw = HANDMAGIC_YAW - camera_shakex2;
 	my->pitch = defaultpitch + HANDMAGIC_PITCH - camera_shakey2 / 200.f;
@@ -284,15 +287,16 @@ void actRightHandMagic(Entity *my)
 		my->focalz = -1.5;
 	}
 
-	if( players[clientnum]==NULL ) {
-		magicRightHand=NULL;
+	if (players[clientnum] == nullptr || players[clientnum]->entity == nullptr)
+	{
+		magicRightHand = nullptr;
 		list_RemoveNode(my->mynode);
 		return;
 	}
 
 	my->x = 8;
 	my->y = 3;
-	my->z = (camera.z *.5 - players[clientnum]->z) + 7;
+	my->z = (camera.z *.5 - players[clientnum]->entity->z) + 7;
 	my->z -= 4;
 	my->yaw = HANDMAGIC_YAW - camera_shakex2;
 	double defaultpitch = (0-6.f) / PI;
@@ -301,34 +305,34 @@ void actRightHandMagic(Entity *my)
 
 	//Sprite
 	bool noGloves=FALSE;
-	if( stats[clientnum].gloves == NULL ) {
+	if( stats[clientnum]->gloves == NULL ) {
 		noGloves=TRUE;
 	} else {
-		if( stats[clientnum].gloves->type == GLOVES || stats[clientnum].gloves->type == GLOVES_DEXTERITY ) {
-			my->sprite = 132 + stats[clientnum].sex;
-		} else if( stats[clientnum].gloves->type == BRACERS || stats[clientnum].gloves->type == BRACERS_CONSTITUTION ) {
-			my->sprite = 323 + stats[clientnum].sex;
-		} else if( stats[clientnum].gloves->type == GAUNTLETS || stats[clientnum].gloves->type == GAUNTLETS_STRENGTH ) {
-			my->sprite = 140 + stats[clientnum].sex;
+		if( stats[clientnum]->gloves->type == GLOVES || stats[clientnum]->gloves->type == GLOVES_DEXTERITY ) {
+			my->sprite = 132 + stats[clientnum]->sex;
+		} else if( stats[clientnum]->gloves->type == BRACERS || stats[clientnum]->gloves->type == BRACERS_CONSTITUTION ) {
+			my->sprite = 323 + stats[clientnum]->sex;
+		} else if( stats[clientnum]->gloves->type == GAUNTLETS || stats[clientnum]->gloves->type == GAUNTLETS_STRENGTH ) {
+			my->sprite = 140 + stats[clientnum]->sex;
 		} else {
 			noGloves = TRUE;
 		}
 	}
 	if( noGloves ) {
-		if( stats[clientnum].appearance/6==0 ) {
-			if( stats[clientnum].sex==FEMALE ) {
+		if( stats[clientnum]->appearance/6==0 ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 121;
 			} else {
 				my->sprite = 109;
 			}
-		} else if( stats[clientnum].appearance/6==1 ) {
-			if( stats[clientnum].sex==FEMALE ) {
+		} else if( stats[clientnum]->appearance/6==1 ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 350;
 			} else {
 				my->sprite = 337;
 			}
 		} else {
-			if( stats[clientnum].sex==FEMALE ) {
+			if( stats[clientnum]->sex==FEMALE ) {
 				my->sprite = 376;
 			} else {
 				my->sprite = 363;
@@ -339,13 +343,14 @@ void actRightHandMagic(Entity *my)
 	bool wearingring = FALSE;
 
 	//Select model
-	if (stats[clientnum].ring != NULL)
-		if (stats[clientnum].ring->type == RING_INVISIBILITY)
+	if (stats[clientnum]->ring != NULL)
+		if (stats[clientnum]->ring->type == RING_INVISIBILITY)
 			wearingring = TRUE;
-	if (stats[clientnum].cloak != NULL)
-		if (stats[clientnum].cloak->type == CLOAK_INVISIBILITY)
+	if (stats[clientnum]->cloak != NULL)
+		if (stats[clientnum]->cloak->type == CLOAK_INVISIBILITY)
 			wearingring = TRUE;
-	if (players[clientnum]->skill[3] == 1 || stats[clientnum].EFFECTS[EFF_INVISIBLE] == TRUE || wearingring ) { // debug cam or player invisible
+	if (players[clientnum]->entity->skill[3] == 1 || stats[clientnum]->EFFECTS[EFF_INVISIBLE] == TRUE || wearingring ) // debug cam or player invisible
+	{
 		my->flags[INVISIBLE] = TRUE;
 	}
 
@@ -384,7 +389,7 @@ void actRightHandMagic(Entity *my)
 	}
 
 	//Final position code.
-	if( players[clientnum] == NULL )
+	if (players[clientnum] == nullptr || players[clientnum]->entity == nullptr)
 		return;
 	//double defaultpitch = PI / 8.f;
 	//double defaultpitch = 0;
@@ -396,8 +401,8 @@ void actRightHandMagic(Entity *my)
 	//my->y = 3 + HUDWEAPON_MOVEY;
 	my->y = 3;
 	my->y -= cast_animation.lefthand_movey;
-	//my->z = (camera.z*.5-players[clientnum]->z)+7+HUDWEAPON_MOVEZ;
-	my->z = (camera.z *.5 - players[clientnum]->z) + 7;
+	//my->z = (camera.z*.5-players[clientnum]->z)+7+HUDWEAPON_MOVEZ; //TODO: NOT a playerswap
+	my->z = (camera.z *.5 - players[clientnum]->entity->z) + 7;
 	my->z -= 4;
 	my->yaw = HANDMAGIC_YAW - camera_shakex2;
 	my->pitch = defaultpitch + HANDMAGIC_PITCH - camera_shakey2 / 200.f;

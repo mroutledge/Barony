@@ -117,5 +117,7 @@ extern bool broadcast;
 extern bool nohud;
 extern int menuselect;
 extern bool colorblind;
+extern bool right_click_protect;
 extern bool settings_auto_hotbar_new_items;
 extern bool settings_disable_messages;
+extern bool settings_right_click_protect;

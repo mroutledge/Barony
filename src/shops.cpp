@@ -17,6 +17,7 @@
 #include "shops.hpp"
 #include "interface/interface.hpp"
 #include "net.hpp"
+#include "player.hpp"
 
 list_t *shopInv = NULL;
 Uint32 shopkeeper = 0;
@@ -43,10 +44,10 @@ void startTradingServer(Entity *entity, int player) {
 		return;
 	if( multiplayer==CLIENT )
 		return;
-	if( !players[player] )
+	if (!players[player] || !players[player]->entity)
 		return;
 	
-	stat_t *stats = entity->getStats();
+	Stat *stats = entity->getStats();
 	if( stats==NULL )
 		return;
 		
@@ -65,7 +66,7 @@ void startTradingServer(Entity *entity, int player) {
 		shopitemscroll = 0;
 	} else if( multiplayer==SERVER ) {
 		// open shop on client
-		stat_t *entitystats = entity->getStats();
+		Stat *entitystats = entity->getStats();
 		strcpy((char *)net_packet->data,"SHOP");
 		SDLNet_Write32((Uint32)entity->uid,&net_packet->data[4]);
 		net_packet->data[8] = entity->skill[18];
@@ -97,7 +98,7 @@ void startTradingServer(Entity *entity, int player) {
 		}
 	}
 	entity->skill[0] = 4; // talk state
-	entity->skill[1] = players[player]->uid;
+	entity->skill[1] = players[player]->entity->uid;
 	messagePlayer(player,language[1122],stats->name);
 }
 
@@ -113,14 +114,14 @@ void buyItemFromShop(Item *item) {
 	if( !item )
 		return;
 
-	if( stats[clientnum].GOLD >= item->buyValue(clientnum) ) {
+	if( stats[clientnum]->GOLD >= item->buyValue(clientnum) ) {
 		if( items[item->type].value*1.5 >= item->buyValue(clientnum) )
 			shopspeech = language[200+rand()%3];
 		else
 			shopspeech = language[197+rand()%3];
 		shoptimer = ticks-1;
-		newItem(item->type,item->status,item->beatitude,1,item->appearance,item->identified,&stats[clientnum].inventory);
-		stats[clientnum].GOLD -= item->buyValue(clientnum);
+		newItem(item->type,item->status,item->beatitude,1,item->appearance,item->identified,&stats[clientnum]->inventory);
+		stats[clientnum]->GOLD -= item->buyValue(clientnum);
 		playSound(89,64);
 		int ocount = item->count;
 		item->count = 1;
@@ -129,11 +130,11 @@ void buyItemFromShop(Item *item) {
 		if( multiplayer != CLIENT ) {
 			Entity *entity = uidToEntity(shopkeeper);
 			if (entity) {
-				stat_t *shopstats = entity->getStats();
+				Stat *shopstats = entity->getStats();
 				shopstats->GOLD += item->buyValue(clientnum);
 			}
 			if( rand()%2 ) {
-				players[clientnum]->increaseSkill(PRO_TRADING);
+				players[clientnum]->entity->increaseSkill(PRO_TRADING);
 			}
 		} else {
 			strcpy((char *)net_packet->data,"SHPB");
@@ -230,7 +231,7 @@ void sellItemToShop(Item *item) {
 		shopspeech = language[206+rand()%3];
 	shoptimer = ticks-1;
 	newItem(item->type,item->status,item->beatitude,1,item->appearance,item->identified,shopInv);
-	stats[clientnum].GOLD += item->sellValue(clientnum);
+	stats[clientnum]->GOLD += item->sellValue(clientnum);
 	playSound(89,64);
 	int ocount = item->count;
 	item->count = 1;
@@ -238,7 +239,7 @@ void sellItemToShop(Item *item) {
 	item->count = ocount;
 	if( multiplayer != CLIENT ) {
 		if( rand()%2 ) {
-			players[clientnum]->increaseSkill(PRO_TRADING);
+			players[clientnum]->entity->increaseSkill(PRO_TRADING);
 		}
 	} else {
 		strcpy((char *)net_packet->data,"SHPS");

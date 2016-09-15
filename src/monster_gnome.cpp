@@ -19,8 +19,9 @@
 #include "book.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
-void initGnome(Entity *my, stat_t *myStats) {
+void initGnome(Entity *my, Stat *myStats) {
 	int c;
 	node_t *node;
 
@@ -411,7 +412,7 @@ void gnomeDie(Entity *my) {
 
 #define GNOMEWALKSPEED .13
 
-void gnomeMoveBodyparts(Entity *my, stat_t *myStats, double dist) {
+void gnomeMoveBodyparts(Entity *my, Stat *myStats, double dist) {
 	node_t *node;
 	Entity *entity = NULL, *entity2 = NULL;
 	Entity *rightbody = NULL;

@@ -18,6 +18,7 @@
 #include "../items.hpp"
 #include "../net.hpp"
 #include "../collision.hpp"
+#include "../player.hpp"
 #include "magic.hpp"
 
 void castSpellInit(Uint32 caster_uid, spell_t *spell){
@@ -46,14 +47,16 @@ void castSpellInit(Uint32 caster_uid, spell_t *spell){
 
 	int player = -1;
 	int i = 0;
-	for (i = 0; i < numplayers; ++i) {
-		if (caster == players[i]) {
+	for (i = 0; i < numplayers; ++i)
+	{
+		if (caster == players[i]->entity)
+		{
 			player = i; //Set the player.
 		}
 	}
 
 	if (player > -1) {
-		if( stats[player].defending ) {
+		if( stats[player]->defending ) {
 			messagePlayer(player,language[407]);
 			return;
 		}
@@ -89,7 +92,7 @@ void castSpellInit(Uint32 caster_uid, spell_t *spell){
 	//Entity *entity = NULL;
 	//node_t *node = spell->elements->first;
 
-	stat_t *stat = caster->getStats();
+	Stat *stat = caster->getStats();
 	if( !stat )
 		return;
 	
@@ -156,11 +159,13 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 	spell_t *channeled_spell=NULL; //Pointer to the spell if it's a channeled spell. For the purpose of giving it its node in the channeled spell list.
 	node_t *node = spell->elements.first;
 
-	stat_t *stat = caster->getStats();
+	Stat *stat = caster->getStats();
 
 	int player = -1;
-	for (i = 0; i < numplayers; ++i) {
-		if (caster == players[i]) {
+	for (i = 0; i < numplayers; ++i)
+	{
+		if (caster == players[i]->entity)
+		{
 			player = i; //Set the player.
 		}
 	}
@@ -236,17 +241,19 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 	//Check if swimming.
 	if (!waterwalkingboots && !levitating && !trap && player>=0) {
 		bool swimming=FALSE;
-		if( players[player] ) {
-			int x = std::min<int>(std::max(0.0,floor(caster->x/16)),map.width-1);
-			int y = std::min<int>(std::max(0.0,floor(caster->y/16)),map.height-1);
-			if( animatedtiles[map.tiles[y*MAPLAYERS+x*MAPLAYERS*map.height]] )
-				swimming=TRUE;
+		if (players[player] && players[player]->entity)
+		{
+			int x = std::min<int>(std::max(0.0, floor(caster->x/16)), map.width-1);
+			int y = std::min<int>(std::max(0.0, floor(caster->y/16)), map.height-1);
+			if (animatedtiles[map.tiles[y*MAPLAYERS + x*MAPLAYERS*map.height]])
+				swimming = TRUE;
 		}
-		if( swimming ) {
+		if (swimming)
+		{
 			//Can't cast spells while swimming if not levitating or water walking.
 			if (player >= 0)
 				messagePlayer(player, language[410]);
-			return NULL;
+			return nullptr;
 		}
 	}
 
@@ -353,7 +360,8 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			stat->EFFECTS[EFF_INVISIBLE] = TRUE;
 			stat->EFFECTS_TIMERS[EFF_INVISIBLE] = duration;
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity)
+				{
 					serverUpdateEffects(i);
 				}
 			}
@@ -383,7 +391,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			stat->EFFECTS[EFF_LEVITATING] = TRUE;
 			stat->EFFECTS_TIMERS[EFF_LEVITATING] = duration;
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity) {
 					serverUpdateEffects(i);
 				}
 			}
@@ -394,7 +402,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			caster->teleportRandom();
 		} else if (!strcmp(element->name, spellElement_identify.name)) {
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity) {
 					spawnMagicEffectParticles(caster->x,caster->y,caster->z,171);
 					if (i != 0) {
 						//Tell the client to identify an item.
@@ -417,7 +425,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			playSoundEntity(caster, 167, 128 );
 		} else if (!strcmp(element->name, spellElement_removecurse.name)) {
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity) {
 					spawnMagicEffectParticles(caster->x,caster->y,caster->z,169);
 					if (i != 0) {
 						//Tell the client to uncurse an item.
@@ -438,7 +446,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			playSoundEntity(caster, 167, 128 );
 		} else if (!strcmp(element->name, spellElement_magicmapping.name)) {
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity) {
 					spawnMagicEffectParticles(caster->x,caster->y,caster->z,171);
 					spell_magicMap(i);
 				}
@@ -447,7 +455,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			playSoundEntity(caster, 167, 128 );
 		} else if (!strcmp(element->name, spellElement_heal.name)) { //TODO: Make it work for NPCs.
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity) {
 					int amount = element->damage * (((element->mana + extramagic_to_use) / element->base_mana) * element->overload_multiplier); //Amount to heal.
 					if (newbie) {
 						//This guy's a newbie. There's a chance they've screwed up and negatively impacted the efficiency of the spell.
@@ -457,7 +465,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 						if (amount < 8)
 							amount = 8; //Range checking.
 					}
-					spell_changeHealth(players[i], amount);
+					spell_changeHealth(players[i]->entity, amount);
 					playSoundEntity(caster, 168, 128);
 
 					for(node = map.entities->first; node->next; node = node->next) {
@@ -481,13 +489,14 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 			spawnMagicEffectParticles(caster->x,caster->y,caster->z,169);
 		} else if (!strcmp(element->name, spellElement_cure_ailment.name)) { //TODO: Generalize it for NPCs too?
 			for (i = 0; i < numplayers; ++i) {
-				if (caster == players[i]) {
+				if (caster == players[i]->entity)
+				{
 					Uint32 color = SDL_MapRGB(mainsurface->format,0,255,0);
 					messagePlayerColor(i,color,language[411]);
 					int c = 0;
 					for (c = 0; c < NUMEFFECTS; ++c) { //This does a whole lot more than just cure ailments.
-						stats[i].EFFECTS[c]=FALSE;
-						stats[i].EFFECTS_TIMERS[c]=0;
+						stats[i]->EFFECTS[c]=FALSE;
+						stats[i]->EFFECTS_TIMERS[c]=0;
 					}
 					serverUpdateEffects(player);
 					playSoundEntity(entity, 168, 128);
@@ -498,7 +507,7 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 							continue;
 						if( entity->behavior!=&actPlayer && entity->behavior!=&actMonster )
 							continue;
-						stat_t *target_stat = entity->getStats();
+						Stat *target_stat = entity->getStats();
 						if( target_stat ) {
 							if (entityDist(entity, caster) <= HEAL_RADIUS && entity->checkFriend(caster)) {
 								for (c = 0; c < NUMEFFECTS; ++c) { //This does a whole lot more than just cure ailments.
@@ -669,7 +678,8 @@ Entity* castSpell(Uint32 caster_uid, spell_t *spell, bool using_magicstaff, bool
 		} else {
 			int target_client = 0;
 			for (i = 0; i < numplayers; ++i) {
-				if (players[i] == caster) {
+				if (players[i]->entity == caster)
+				{
 					target_client = i;
 				}
 			}

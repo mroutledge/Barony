@@ -17,6 +17,7 @@
 #include "entity.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -30,48 +31,58 @@
 #define LADDER_AMBIENCE my->skill[1]
 #define LADDER_SECRET my->skill[3]
 
-void actLadder(Entity *my) {
-	int playercount=0;
+void actLadder(Entity *my)
+{
+	int playercount = 0;
 	double dist;
 	int i, c;
-	
+
 	LADDER_AMBIENCE--;
-	if( LADDER_AMBIENCE<=0 ) {
+	if (LADDER_AMBIENCE <= 0)
+	{
 		LADDER_AMBIENCE = TICKS_PER_SECOND*30;
-		playSoundEntityLocal( my, 149, 64 );
+		playSoundEntityLocal(my, 149, 64);
 	}
 
 	// use ladder (climb)
-	if( multiplayer!=CLIENT ) {
-		for(i=0;i<MAXPLAYERS;i++) {
-			if( (i==0 && selectedEntity==my) || (client_selected[i]==my) ) {
-				if(inrange[i]) {
-					for( c=0; c<MAXPLAYERS; c++ ) {
-						if( client_disconnected[c] || players[c] == NULL )
+	if (multiplayer != CLIENT)
+	{
+		for (i = 0; i < MAXPLAYERS; i++)
+		{
+			if ((i == 0 && selectedEntity == my) || (client_selected[i] == my))
+			{
+				if (inrange[i])
+				{
+					for (c = 0; c < MAXPLAYERS; c++)
+					{
+						if (client_disconnected[c] || players[c] == nullptr || players[c]->entity == nullptr)
 							continue;
 						else
 							playercount++;
-						dist = sqrt( pow(my->x-players[c]->x,2) + pow(my->y-players[c]->y,2) );
-						if( dist > TOUCHRANGE ) {
-							messagePlayer(i,language[505]);
+						dist = sqrt(pow(my->x - players[c]->entity->x, 2) + pow(my->y - players[c]->entity->y, 2));
+						if (dist > TOUCHRANGE)
+						{
+							messagePlayer(i, language[505]);
 							return;
 						}
 					}
-					if( playercount==1 )
-						messagePlayer(i,language[506]);
+					if (playercount == 1)
+						messagePlayer(i, language[506]);
 					else
-						messagePlayer(i,language[507]);
-					loadnextlevel=TRUE;
-					if( secretlevel ) {
-						switch( currentlevel ) {
+						messagePlayer(i, language[507]);
+					loadnextlevel = TRUE;
+					if (secretlevel)
+					{
+						switch (currentlevel)
+						{
 							case 3:
-								for( c=0; c<MAXPLAYERS; c++ )
-									steamAchievementClient(c,"BARONY_ACH_THUNDERGNOME");
+								for (c = 0; c < MAXPLAYERS; c++)
+									steamAchievementClient(c, "BARONY_ACH_THUNDERGNOME");
 								break;
 						}
 					}
-					if( LADDER_SECRET )
-						secretlevel = (secretlevel==FALSE); // toggle level lists
+					if (LADDER_SECRET)
+						secretlevel = (secretlevel == FALSE); // toggle level lists
 					return;
 				}
 			}
@@ -128,25 +139,30 @@ void actPortal(Entity *my) {
 		return;
 
 	// step through portal
-	for(i=0;i<MAXPLAYERS;i++) {
-		if( (i==0 && selectedEntity==my) || (client_selected[i]==my) ) {
-			if(inrange[i]) {
-				for( c=0; c<MAXPLAYERS; c++ ) {
-					if( client_disconnected[c] || players[c] == NULL )
+	for (i = 0; i < MAXPLAYERS; i++)
+	{
+		if ((i == 0 && selectedEntity == my) || (client_selected[i] == my))
+		{
+			if (inrange[i])
+			{
+				for (c = 0; c < MAXPLAYERS; c++)
+				{
+					if (client_disconnected[c] || players[c] == nullptr || players[c]->entity == nullptr)
 						continue;
 					else
 						playercount++;
-					dist = sqrt( pow(my->x-players[c]->x,2) + pow(my->y-players[c]->y,2) );
-					if( dist > TOUCHRANGE ) {
-						messagePlayer(i,language[505]);
+					dist = sqrt(pow(my->x - players[c]->entity->x, 2) + pow(my->y - players[c]->entity->y, 2));
+					if (dist > TOUCHRANGE)
+					{
+						messagePlayer(i, language[505]);
 						return;
 					}
 				}
-				if( playercount==1 )
-					messagePlayer(i,language[510]);
+				if (playercount == 1)
+					messagePlayer(i, language[510]);
 				else
-					messagePlayer(i,language[511]);
-				loadnextlevel=TRUE;
+					messagePlayer(i, language[511]);
+				loadnextlevel = TRUE;
 				if( secretlevel ) {
 					switch( currentlevel ) {
 						case 9: {
@@ -192,7 +208,7 @@ void actWinningPortal(Entity *my) {
 			for( node=map.entities->first; node!=NULL; node=node->next ) {
 				Entity *entity = (Entity *)node->element;
 				if( entity->behavior==&actMonster ) {
-					stat_t *stats = entity->getStats();
+					Stat *stats = entity->getStats();
 					if( stats ) {
 						if( stats->type == LICH || stats->type == DEVIL ) {
 							return;
@@ -225,17 +241,22 @@ void actWinningPortal(Entity *my) {
 		return;
 
 	// step through portal
-	for(i=0;i<MAXPLAYERS;i++) {
-		if( (i==0 && selectedEntity==my) || (client_selected[i]==my) ) {
-			if(inrange[i]) {
-				for( c=0; c<MAXPLAYERS; c++ ) {
-					if( client_disconnected[c] || players[c] == NULL )
+	for (i = 0; i < MAXPLAYERS; i++)
+	{
+		if ((i == 0 && selectedEntity == my) || (client_selected[i] == my))
+		{
+			if (inrange[i])
+			{
+				for (c = 0; c < MAXPLAYERS; c++)
+				{
+					if (client_disconnected[c] || players[c] == nullptr || players[c]->entity == nullptr)
 						continue;
 					else
 						playercount++;
-					dist = sqrt( pow(my->x-players[c]->x,2) + pow(my->y-players[c]->y,2) );
-					if( dist > TOUCHRANGE ) {
-						messagePlayer(i,language[509]);
+					dist = sqrt( pow(my->x - players[c]->entity->x, 2) + pow(my->y - players[c]->entity->y, 2));
+					if (dist > TOUCHRANGE)
+					{
+						messagePlayer(i, language[509]);
 						return;
 					}
 				}

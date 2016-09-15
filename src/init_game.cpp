@@ -28,6 +28,7 @@
 #endif
 #include "menu.hpp"
 #include "paths.hpp"
+#include "player.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -252,23 +253,27 @@ int initGame() {
 		openedChest[c] = NULL;
 	}
 	mousex=xres/2; mousey=yres/2;
-	
+
+	players = new Player*[MAXPLAYERS];
 	// default player stats
-	for( c=0; c<MAXPLAYERS; c++ ) {
-		if( c>0 )
-			client_disconnected[c]=TRUE;
-		players[c]=NULL;
-		stats[c].sex=static_cast<sex_t>(0);
-		stats[c].appearance=0;
-		strcpy(stats[c].name,"");
-		stats[c].type = HUMAN;
-		stats[c].FOLLOWERS.first = NULL; stats[c].FOLLOWERS.last = NULL;
-		stats[c].inventory.first=NULL;
-		stats[c].inventory.last=NULL;
-		clearStats(&stats[c]);
-		entitiesToDelete[c].first=NULL;
-		entitiesToDelete[c].last=NULL;
-		if( c==0 )
+	for (c = 0; c < MAXPLAYERS; c++)
+	{
+		players[c] = new Player();
+		stats[c] = new Stat();
+		if (c > 0)
+			client_disconnected[c] = TRUE;
+		players[c]->entity = nullptr;
+		stats[c]->sex = static_cast<sex_t>(0);
+		stats[c]->appearance = 0;
+		strcpy(stats[c]->name, "");
+		stats[c]->type = HUMAN;
+		stats[c]->FOLLOWERS.first = nullptr; stats[c]->FOLLOWERS.last = nullptr;
+		stats[c]->inventory.first = nullptr;
+		stats[c]->inventory.last = nullptr;
+		stats[c]->clearStats();
+		entitiesToDelete[c].first = nullptr;
+		entitiesToDelete[c].last = nullptr;
+		if (c == 0)
 			initClass(c);
 	}
 
@@ -396,7 +401,7 @@ void deinitGame() {
 			net_packet->len = 11;
 			sendPacketSafe(net_sock, -1, net_packet, x-1);
 			
-			freePlayerEquipment(x);
+			stats[x]->freePlayerEquipment();
 			client_disconnected[x]=TRUE;
 		}
 	}
@@ -463,7 +468,7 @@ void deinitGame() {
 	appraisal_timer=0;
 	appraisal_item=0;
 	for(c=0;c<MAXPLAYERS;c++)
-		list_FreeAll(&stats[c].inventory);
+		list_FreeAll(&stats[c]->inventory);
 	if( multiplayer==CLIENT ) {
 		if( shopInv ) {
 			list_FreeAll(shopInv);
@@ -612,4 +617,10 @@ void deinitGame() {
 		}
 	}
 	#endif
+
+	for (int i = 0; i < MAXPLAYERS; ++i)
+	{
+		delete players[i];
+	}
+	delete[] players;
 }

@@ -17,6 +17,7 @@
 #include "../sound.hpp"
 #include "../net.hpp"
 #include "../menu.hpp"
+#include "../player.hpp"
 #include "interface.hpp"
 
 char enemy_name[128];
@@ -51,7 +52,7 @@ void handleDamageIndicators() {
 		pos.y += 200*sin(angle);
 		pos.w = damage_bmp->w;
 		pos.h = damage_bmp->h;
-		if( stats[clientnum].HP>0 )
+		if( stats[clientnum]->HP>0 )
 			drawImageRotatedAlpha( damage_bmp, NULL, &pos, angle, (Uint8)(damageIndicator->alpha*255) );
 
 		damageIndicator->alpha = std::min(damageIndicator->ticks,120)/120.f;
@@ -108,29 +109,34 @@ damageIndicator_t *newDamageIndicator(double x, double y) {
 
 -------------------------------------------------------------------------------*/
 
-void updateEnemyBar(Entity *source, Entity *target, char *name, Sint32 hp, Sint32 maxhp) {
-	int player=-1;
+void updateEnemyBar(Entity *source, Entity *target, char *name, Sint32 hp, Sint32 maxhp)
+{
+	int player = -1;
 	int c;
 
-	if( !source || !target )
+	if (!source || !target)
 		return;
 
-	for( c=0; c<MAXPLAYERS; c++ ) {
-		if( source==players[c] ) {
+	for (c = 0; c < MAXPLAYERS; c++)
+	{
+		if (source == players[c]->entity)
+		{
 			player = c;
 			break;
 		}
 	}
 
 	int playertarget=-1;
-	for( c=0; c<MAXPLAYERS; c++ ) {
-		if( target==players[c] ) {
+	for (c = 0; c < MAXPLAYERS; c++)
+	{
+		if (target == players[c]->entity)
+		{
 			playertarget = c;
 			break;
 		}
 	}
 
-	stat_t *stats = target->getStats();
+	Stat *stats = target->getStats();
 	if( stats ) {
 		if( stats->HP != stats->OLDHP ) {
 			if( playertarget==clientnum ) {
@@ -190,7 +196,7 @@ void drawStatus() {
 	drawImage(status_bmp, NULL, &pos);
 	
 	// hunger icon
-	if( stats[clientnum].HUNGER <= 250 && (ticks%50)-(ticks%25) ) {
+	if( stats[clientnum]->HUNGER <= 250 && (ticks%50)-(ticks%25) ) {
 		pos.x=128; pos.y=yres-160;
 		pos.w=64; pos.h=64;
 		drawImageScaled(hunger_bmp, NULL, &pos);
@@ -350,7 +356,7 @@ void drawStatus() {
 	pos.h = 128;
 	pos.y = yres-16-pos.h;
 	Uint32 color;
-	if( stats[clientnum].EFFECTS[EFF_POISONED] ) {
+	if( stats[clientnum]->EFFECTS[EFF_POISONED] ) {
 		if( !colorblind ) {
 			color = SDL_MapRGB(mainsurface->format,0,16,0);
 		} else {
@@ -360,12 +366,12 @@ void drawStatus() {
 		color = SDL_MapRGB(mainsurface->format,16,0,0);
 	}
 	drawRect(&pos,color,255);
-	if( stats[clientnum].HP > 0 ) {
+	if( stats[clientnum]->HP > 0 ) {
 		pos.x = 80;
 		pos.w = 32;
-		pos.h = 128*((double)stats[clientnum].HP/stats[clientnum].MAXHP);
+		pos.h = 128*((double)stats[clientnum]->HP/stats[clientnum]->MAXHP);
 		pos.y = yres-16-pos.h;
-		if( stats[clientnum].EFFECTS[EFF_POISONED] ) {
+		if( stats[clientnum]->EFFECTS[EFF_POISONED] ) {
 			if( !colorblind ) {
 				color = SDL_MapRGB(mainsurface->format,0,128,0);
 			} else {
@@ -376,7 +382,7 @@ void drawStatus() {
 		}
 		drawRect(&pos,color,255);
 	}
-	snprintf(tempstr, 4, "%d", stats[clientnum].HP);
+	snprintf(tempstr, 4, "%d", stats[clientnum]->HP);
 	printTextFormatted(font12x12_bmp, 96-strlen(tempstr)*6, yres-16-64-6, tempstr );
 		
 	// magic
@@ -391,14 +397,14 @@ void drawStatus() {
 	pos.h = 128;
 	pos.y = yres-16-pos.h;
 	drawRect(&pos,SDL_MapRGB(mainsurface->format,0,0,16),255);
-	if( stats[clientnum].MP > 0 ) {
+	if( stats[clientnum]->MP > 0 ) {
 		pos.x = 16;
 		pos.w = 32;
-		pos.h = 128*((double)stats[clientnum].MP/stats[clientnum].MAXMP);
+		pos.h = 128*((double)stats[clientnum]->MP/stats[clientnum]->MAXMP);
 		pos.y = yres-16-pos.h;
 		drawRect(&pos,SDL_MapRGB(mainsurface->format,0,0,128),255);
 	}
-	snprintf(tempstr, 4, "%d", stats[clientnum].MP);
+	snprintf(tempstr, 4, "%d", stats[clientnum]->MP);
 	printTextFormatted(font12x12_bmp, 32-strlen(tempstr)*6, yres-16-64-6, tempstr );
 
 	Item *item = NULL;
@@ -415,7 +421,7 @@ void drawStatus() {
 			pos.w = hotbar_img->w;
 			pos.h = hotbar_img->h;
 			drawImageScaled(itemSprite(item), NULL, &pos);
-			if( stats[clientnum].HP>0 ) {
+			if( stats[clientnum]->HP>0 ) {
 				if (!shootmode && mouseInBounds(pos.x, pos.x + hotbar_img->w, pos.y, pos.y + hotbar_img->h)) {
 					if( mousestatus[SDL_BUTTON_LEFT] && !selectedItem ) {
 						toggleclick=FALSE;
@@ -461,7 +467,7 @@ void drawStatus() {
 									net_packet->len = 26;
 									sendPacketSafe(net_sock, -1, net_packet, 0);
 								}
-								equipItem(item,&stats[clientnum].weapon,clientnum);
+								equipItem(item,&stats[clientnum]->weapon,clientnum);
 							}
 							used = TRUE;
 						}
@@ -581,7 +587,7 @@ void drawStatus() {
 	}
 
 	//NOTE: If you change the number of hotbar slots, you *MUST* change this.
-	if( !command && stats[clientnum].HP>0 ) {
+	if( !command && stats[clientnum]->HP>0 ) {
 		Item *item=NULL;
 		if( keystatus[SDL_SCANCODE_1] ) {
 			keystatus[SDL_SCANCODE_1] = 0;
@@ -646,7 +652,7 @@ void drawStatus() {
 					net_packet->len = 26;
 					sendPacketSafe(net_sock, -1, net_packet, 0);
 				}
-				equipItem(item,&stats[clientnum].weapon,clientnum);
+				equipItem(item,&stats[clientnum]->weapon,clientnum);
 			}
 		}
 	}

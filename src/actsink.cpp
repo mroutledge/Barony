@@ -18,6 +18,7 @@
 #include "items.hpp"
 #include "net.hpp"
 #include "collision.hpp"
+#include "player.hpp"
 
 /*-------------------------------------------------------------------------------
 
@@ -30,8 +31,8 @@
 
 #define SINK_AMBIENCE my->skill[7]
 
-void actSink(Entity *my) {
-	//TODO: Sounds.
+void actSink(Entity *my)
+{
 	SINK_AMBIENCE--;
 	if( SINK_AMBIENCE<=0 ) {
 		SINK_AMBIENCE = TICKS_PER_SECOND*30;
@@ -76,9 +77,9 @@ void actSink(Entity *my) {
 					switch (my->skill[3]) {
 						case 0:
 						{
-							playSoundEntity(players[i], 52, 64);
-							messagePlayer(i,language[581]);
-							
+							playSoundEntity(players[i]->entity, 52, 64);
+							messagePlayer(i, language[581]);
+
 							//Randomly choose a ring.
 							//88-99 are rings.
 							//So 12 rings total.
@@ -117,14 +118,14 @@ void actSink(Entity *my) {
 							break;
 						}
 						case 1: {
-							playSoundEntity(players[i], 52, 64);
+							playSoundEntity(players[i]->entity, 52, 64);
 							
 							// spawn slime
 							Entity *monster = summonMonster(SLIME,my->x,my->y);
 							if( monster ) {
 								Uint32 color = SDL_MapRGB(mainsurface->format,255,128,0);
 								messagePlayerColor(i, color, language[582]);
-								stat_t *monsterStats = monster->getStats();
+								Stat *monsterStats = monster->getStats();
 								monsterStats->LVL = 4;
 								monster->sprite = 210;
 								monster->flags[INVISIBLE] = FALSE;
@@ -132,14 +133,14 @@ void actSink(Entity *my) {
 							break;
 						}
 						case 2:
-							playSoundEntity(players[i], 52, 64);
+							playSoundEntity(players[i]->entity, 52, 64);
 							messagePlayer(i, language[583]);
-							stats[i].HUNGER += 30; //Less nutrition than the refreshing fountain.
+							stats[i]->HUNGER += 30; //Less nutrition than the refreshing fountain.
 							break;
 						case 3:
-							playSoundEntity(players[i], 52, 64);
+							playSoundEntity(players[i]->entity, 52, 64);
 							messagePlayer(i, language[584]);
-							players[i]->modHP(-1);
+							players[i]->entity->modHP(-1);
 							break;
 						default: break;
 					}
