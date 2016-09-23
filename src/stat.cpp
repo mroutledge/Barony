@@ -93,92 +93,94 @@ void statConstructor(stat_t *stat) {
 -------------------------------------------------------------------------------*/
 
 void statDeconstructor(void *data) {
-	stat_t *stat;
-	if (data != NULL) {
-		stat = (stat_t *)data;
-		if (stat->helmet != NULL) {
-			if (stat->helmet->node == NULL)
-				free(stat->helmet);
-			else
-				list_RemoveNode(stat->helmet->node);
-			stat->helmet = NULL;
-		}
-		if (stat->breastplate != NULL) {
-			if (stat->breastplate->node == NULL)
-				free(stat->breastplate);
-			else
-				list_RemoveNode(stat->breastplate->node);
-			stat->breastplate = NULL;
-		}
-		if (stat->gloves != NULL) {
-			if (stat->gloves->node == NULL)
-				free(stat->gloves);
-			else
-				list_RemoveNode(stat->gloves->node);
-			stat->gloves = NULL;
-		}
-		if (stat->shoes != NULL) {
-			if (stat->shoes->node == NULL)
-				free(stat->shoes);
-			else
-				list_RemoveNode(stat->shoes->node);
-			stat->shoes = NULL;
-		}
-		if (stat->shield != NULL) {
-			if (stat->shield->node == NULL)
-				free(stat->shield);
-			else
-				list_RemoveNode(stat->shield->node);
-			stat->shield = NULL;
-		}
-		if (stat->weapon != NULL) {
-			if (stat->weapon->node == NULL)
-				free(stat->weapon);
-			else
-				list_RemoveNode(stat->weapon->node);
-			stat->weapon = NULL;
-		}
-		if (stat->cloak != NULL) {
-			if (stat->cloak->node == NULL)
-				free(stat->cloak);
-			else
-				list_RemoveNode(stat->cloak->node);
-			stat->cloak = NULL;
-		}
-		if (stat->amulet != NULL) {
-			if (stat->amulet->node == NULL)
-				free(stat->amulet);
-			else
-				list_RemoveNode(stat->amulet->node);
-			stat->amulet = NULL;
-		}
-		if (stat->ring != NULL) {
-			if (stat->ring->node == NULL)
-				free(stat->ring);
-			else
-				list_RemoveNode(stat->ring->node);
-			stat->ring = NULL;
-		}
-		if (stat->mask != NULL) {
-			if (stat->mask->node == NULL)
-				free(stat->mask);
-			else
-				list_RemoveNode(stat->mask->node);
-			stat->mask = NULL;
-		}
-		//Free memory for magic effects.
-		node_t *spellnode;
-		spellnode = stat->magic_effects.first;
-		while (spellnode) {
-			node_t *oldnode = spellnode;
-			spellnode = spellnode->next;
-			spell_t *spell = (spell_t*)oldnode->element;
-			spell->magic_effects_node = NULL;
-		}
-		list_FreeAll(&stat->magic_effects);
-		list_FreeAll(&stat->inventory);
-		free(data);
+	if (data == NULL) {
+		return;
 	}
+
+	stat_t *stat = (stat_t *)data;
+
+	if (stat->helmet != NULL) {
+		if (stat->helmet->node == NULL)
+			free(stat->helmet);
+		else
+			list_RemoveNode(stat->helmet->node);
+		stat->helmet = NULL;
+	}
+	if (stat->breastplate != NULL) {
+		if (stat->breastplate->node == NULL)
+			free(stat->breastplate);
+		else
+			list_RemoveNode(stat->breastplate->node);
+		stat->breastplate = NULL;
+	}
+	if (stat->gloves != NULL) {
+		if (stat->gloves->node == NULL)
+			free(stat->gloves);
+		else
+			list_RemoveNode(stat->gloves->node);
+		stat->gloves = NULL;
+	}
+	if (stat->shoes != NULL) {
+		if (stat->shoes->node == NULL)
+			free(stat->shoes);
+		else
+			list_RemoveNode(stat->shoes->node);
+		stat->shoes = NULL;
+	}
+	if (stat->shield != NULL) {
+		if (stat->shield->node == NULL)
+			free(stat->shield);
+		else
+			list_RemoveNode(stat->shield->node);
+		stat->shield = NULL;
+	}
+	if (stat->weapon != NULL) {
+		if (stat->weapon->node == NULL)
+			free(stat->weapon);
+		else
+			list_RemoveNode(stat->weapon->node);
+		stat->weapon = NULL;
+	}
+	if (stat->cloak != NULL) {
+		if (stat->cloak->node == NULL)
+			free(stat->cloak);
+		else
+			list_RemoveNode(stat->cloak->node);
+		stat->cloak = NULL;
+	}
+	if (stat->amulet != NULL) {
+		if (stat->amulet->node == NULL)
+			free(stat->amulet);
+		else
+			list_RemoveNode(stat->amulet->node);
+		stat->amulet = NULL;
+	}
+	if (stat->ring != NULL) {
+		if (stat->ring->node == NULL)
+			free(stat->ring);
+		else
+			list_RemoveNode(stat->ring->node);
+		stat->ring = NULL;
+	}
+	if (stat->mask != NULL) {
+		if (stat->mask->node == NULL)
+			free(stat->mask);
+		else
+			list_RemoveNode(stat->mask->node);
+		stat->mask = NULL;
+	}
+	//Free memory for magic effects.
+	node_t *spellnode;
+	spellnode = stat->magic_effects.first;
+	while (spellnode) {
+		node_t *oldnode = spellnode;
+		spellnode = spellnode->next;
+		spell_t *spell = (spell_t*)oldnode->element;
+		spell->magic_effects_node = NULL;
+	}
+	list_FreeAll(&stat->magic_effects);
+	list_FreeAll(&stat->inventory);
+	free(data);
 }
 
 /*-------------------------------------------------------------------------------
@@ -190,8 +192,6 @@ void statDeconstructor(void *data) {
 -------------------------------------------------------------------------------*/
 
 void clearStats(stat_t *stats) {
-	int x;
-
 	strcpy(stats->obituary, language[1500]);
 	stats->poisonKiller = 0;
 	stats->HP = DEFAULT_HP; stats->MAXHP = DEFAULT_HP;
@@ -205,9 +205,10 @@ void clearStats(stat_t *stats) {
 	stats->CHR = 0;
 	stats->GOLD = 0;
 	stats->HUNGER = 1000;
-	stats->LVL = 1; stats->EXP = 0;
+	stats->LVL = 1;
+	stats->EXP = 0;
 	list_FreeAll(&stats->FOLLOWERS);
-	for (x = 0; x < std::max(NUMPROFICIENCIES, NUMEFFECTS); x++) {
+	for (int x = 0; x < std::max(NUMPROFICIENCIES, NUMEFFECTS); x++) {
 		if (x < NUMPROFICIENCIES)
 			stats->PROFICIENCIES[x] = 0;
 		if (x < NUMEFFECTS) {
