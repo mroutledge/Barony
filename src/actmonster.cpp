@@ -1191,7 +1191,7 @@ void actMonster(Entity *my) {
 	// chatting
 	char namesays[32];
 	if (!strcmp(myStats->name, "")) {
-		snprintf(namesays, 31, language[513], language[90 + (int)myStats->type]);
+		snprintf(namesays, 31, language[513], monsterNamesChar[myStats->lookupKey]);
 	}
 	else {
 		snprintf(namesays, 31, language[1302], myStats->name);
@@ -1256,7 +1256,7 @@ void actMonster(Entity *my) {
 										messagePlayer(monsterclicked, language[525 + rand() % 4], namesays, stats[monsterclicked].name);
 									}
 									else {
-										messagePlayer(monsterclicked, language[529], language[90 + (int)myStats->type]);
+										messagePlayer(monsterclicked, language[529], monsterNamesChar[myStats->lookupKey]);
 									}
 									monsterMoveAside(my, players[monsterclicked]);
 									players[monsterclicked]->increaseSkill(PRO_LEADERSHIP);

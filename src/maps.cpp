@@ -472,7 +472,7 @@ int generateDungeon(char *levelset, Uint32 seed) {
 			// otherwise, choose a location from those available (to be stored in x/y)
 			pickedlocation = prng_get_uint() % numpossiblelocations; i = -1;
 			x = 0; y = 0;
-			while (1) {
+			while (true) {
 				if (possiblelocations2[x + y*map.width] == TRUE) {
 					i++;
 					if (i == pickedlocation)

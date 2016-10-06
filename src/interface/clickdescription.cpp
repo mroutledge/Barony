@@ -107,9 +107,9 @@ void clickDescription(int player, Entity *entity) {
 							stat_t *stats = parent->getStats();
 							if( stats ) {
 								if( strcmp(stats->name,"") ) {
-									messagePlayer(player,language[253],language[90+stats->type],stats->name);
+									messagePlayer(player,language[253], monsterNamesChar[stat->lookupKey],stats->name);
 								} else {
-									messagePlayer(player,language[254],language[90+stats->type]);
+									messagePlayer(player,language[254], monsterNamesChar[stat->lookupKey]);
 								}
 							}
 						}
@@ -178,9 +178,9 @@ void clickDescription(int player, Entity *entity) {
 				}
 			} else {
 				if( !strcmp(stat->name,"") ) {
-					messagePlayer(player,language[254],language[90+stat->type]);
+					messagePlayer(player,language[254], monsterNamesChar[stat->lookupKey]);
 				} else {
-					messagePlayer(player,language[253],language[90+stat->type],stat->name);
+					messagePlayer(player,language[253], monsterNamesChar[stat->lookupKey],stat->name);
 				}
 			}
 		} else {

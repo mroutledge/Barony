@@ -609,7 +609,7 @@ void gameLogic(void) {
 										messagePlayer(c, language[720], monsterStats->name);
 									}
 									else {
-										messagePlayer(c, language[721], language[90 + (int)monsterStats->type]);
+										messagePlayer(c, language[721], monsterNamesChar[monsterStats->lookupKey]);
 									}
 									if (!monsterally[HUMAN][monsterStats->type])
 										monster->flags[USERFLAG2] = TRUE;
@@ -634,7 +634,7 @@ void gameLogic(void) {
 										messagePlayer(c, language[722], tempStats->name);
 									}
 									else {
-										messagePlayer(c, language[723], language[90 + (int)tempStats->type]);
+										messagePlayer(c, language[723], monsterNamesChar[tempStats->lookupKey]);
 									}
 								}
 							}
