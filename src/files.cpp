@@ -160,12 +160,6 @@ int loadMap(char *filename2, map_t *destmap, list_t *entlist) {
 	strcpy(oldmapname, map.name);
 
 	if (filename2 != NULL && strcmp(filename2, "")) {
-		c = 0;
-		while (1) {
-			if (filename2[c] == 0)
-				break;
-			c++;
-		}
 		filename = (char *)malloc(sizeof(char) * 256);
 		strcpy(filename, "maps/");
 		strcat(filename, filename2);
