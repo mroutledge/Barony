@@ -115,13 +115,13 @@ double sightranges[NUMMONSTERS] = {
 
 -------------------------------------------------------------------------------*/
 
-void summonMonsterClient(Monster creature, long x, long y, Uint32 uid) {
+void summonMonsterClient(Monster creature, double x, double y, Uint32 uid) {
 	Entity *entity = summonMonster(creature, x, y);
 	entity->flags[INVISIBLE] = FALSE;
 	entity->uid = uid;
 }
 
-Entity *summonMonster(Monster creature, long x, long y) {
+Entity *summonMonster(Monster creature, double x, double y) {
 	Entity *entity = newEntity(-1, 1, map.entities);
 	//Set the monster's variables.
 	entity->sizex = 4;
