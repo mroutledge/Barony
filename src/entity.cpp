@@ -3085,11 +3085,11 @@ void Entity::attack(int pose, int charge) {
 					}
 					if (!strcmp(myStats->name, "")) {
 						Uint32 color = SDL_MapRGB(mainsurface->format, 255, 0, 0);
-						messagePlayerColor(playerhit, color, language[698], language[90 + myStats->type], language[132 + myStats->type]);
+						messagePlayerColor(playerhit, color, language[698], monsterNamesChar[myStats->lookupKey], hitTypeString(myStats->hitType));
 					}
 					else {
 						Uint32 color = SDL_MapRGB(mainsurface->format, 255, 0, 0);
-						messagePlayerColor(playerhit, color, language[699], myStats->name, language[132 + myStats->type]);
+						messagePlayerColor(playerhit, color, language[699], myStats->name, hitTypeString(myStats->hitType));
 					}
 					if (damage > 0) {
 						Entity *gib = spawnGib(hit.entity);

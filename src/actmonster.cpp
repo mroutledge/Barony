@@ -886,7 +886,7 @@ void actMonster(Entity *my) {
 					snprintf(whatever, 255, "%s %s", myStats->name, myStats->obituary);
 				}
 				else {
-					snprintf(whatever, 255, language[1499], stats[c].name, language[90 + myStats->type], myStats->obituary);
+					snprintf(whatever, 255, language[1499], stats[c].name, monsterNamesChar[myStats->lookupKey], myStats->obituary);
 				}
 				messagePlayer(c, whatever);
 			}
@@ -1211,7 +1211,7 @@ void actMonster(Entity *my) {
 	if (monsterclicked >= 0) {
 		if (!my->isMobile()) {
 			if (!strcmp(myStats->name, "")) {
-				messagePlayer(monsterclicked, language[514], language[90 + myStats->type]);
+				messagePlayer(monsterclicked, language[514], monsterNamesChar[myStats->lookupKey]);
 			}
 			else {
 				messagePlayer(monsterclicked, language[515], myStats->name);
