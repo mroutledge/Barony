@@ -159,28 +159,20 @@ int loadMap(char *filename2, map_t *destmap, list_t *entlist) {
 	char oldmapname[64];
 	strcpy(oldmapname, map.name);
 
-	if (filename2 != NULL && strcmp(filename2, "")) {
-		filename = (char *)malloc(sizeof(char) * 256);
-		strcpy(filename, "maps/");
-		strcat(filename, filename2);
+	if (filename2 == NULL || strcmp(filename2, "") == 0) {
+		return -1;
+	}
+	filename = (char *)malloc(sizeof(char) * 256);
+	strcpy(filename, "maps/");
+	strcat(filename, filename2);
 
-		if (strcmp(filename, "..") && strcmp(filename, ".")) {
-			// add extension if missing
-			if (strstr(filename, ".lmp") == NULL)
-				strcat(filename, ".lmp");
+	if (strcmp(filename, "..") && strcmp(filename, ".")) {
+		// add extension if missing
+		if (strstr(filename, ".lmp") == NULL)
+			strcat(filename, ".lmp");
 
-			// load the file!
-			if ((fp = fopen(filename, "rb")) == NULL) {
-				printlog("warning: failed to open file '%s' for map loading!\n", filename);
-				if (destmap == &map && game) {
-					printlog("error: main map failed to load, aborting.\n");
-					mainloop = 0;
-				}
-				free(filename);
-				return -1;
-			}
-		}
-		else {
+		// load the file!
+		if ((fp = fopen(filename, "rb")) == NULL) {
 			printlog("warning: failed to open file '%s' for map loading!\n", filename);
 			if (destmap == &map && game) {
 				printlog("error: main map failed to load, aborting.\n");
@@ -189,104 +181,110 @@ int loadMap(char *filename2, map_t *destmap, list_t *entlist) {
 			free(filename);
 			return -1;
 		}
-		fread(valid_data, sizeof(char), strlen("BARONY"), fp);
-		if (strncmp(valid_data, "BARONY", strlen("BARONY"))) {
-			printlog("warning: file '%s' is an invalid map file.\n", filename);
-			fclose(fp);
-			if (destmap == &map && game) {
-				printlog("error: main map failed to load, aborting.\n");
-				mainloop = 0;
-			}
-			free(filename);
-			return -1;
-		}
-		list_FreeAll(entlist);
-		if (destmap == &map) {
-			// remove old lights
-			list_FreeAll(&light_l);
-		}
-		if (destmap->tiles != NULL)
-			free(destmap->tiles);
-		fread(destmap->name, sizeof(char), 32, fp); // map name
-		fread(destmap->author, sizeof(char), 32, fp); // map author
-		fread(&destmap->width, sizeof(Uint32), 1, fp); // map width
-		fread(&destmap->height, sizeof(Uint32), 1, fp); // map height
-		destmap->tiles = (Sint32 *)malloc(sizeof(Sint32)*destmap->width*destmap->height*MAPLAYERS);
-		fread(destmap->tiles, sizeof(Sint32), destmap->width*destmap->height*MAPLAYERS, fp);
-		fread(&numentities, sizeof(Uint32), 1, fp); // number of entities on the map
-		for (c = 0; c < numentities; c++) {
-			fread(&sprite, sizeof(Sint32), 1, fp);
-			entity = newEntity(sprite, 0, entlist);
-			fread(&x, sizeof(Sint32), 1, fp);
-			fread(&y, sizeof(Sint32), 1, fp);
-			entity->x = x;
-			entity->y = y;
-		}
-		free(filename);
-		fclose(fp);
-
-		if (destmap == &map) {
-			nummonsters = 0;
-			minotaurlevel = 0;
-			if (strcmp(oldmapname, map.name))
-				levelmusicplaying = FALSE;
-
-			// create new lightmap
-			if (lightmap != NULL)
-				free(lightmap);
-			lightmap = (int *)malloc(sizeof(Sint32)*destmap->width*destmap->height);
-			if (strncmp(map.name, "Hell", 4)) {
-				for (c = 0; c < destmap->width*destmap->height; c++)
-					lightmap[c] = 0;
-			}
-			else {
-				for (c = 0; c < destmap->width*destmap->height; c++)
-					lightmap[c] = 32;
-			}
-
-			// create a new vismap
-			if (vismap != NULL)
-				free(vismap);
-			vismap = (bool *)calloc(destmap->width*destmap->height, sizeof(bool));
-
-			// reset minimap
-			for (x = 0; x < 64; x++)
-				for (y = 0; y < 64; y++)
-					minimap[y][x] = 0;
-
-			// reset camera
-			if (game) {
-				camera.x = -32;
-				camera.y = -32;
-				camera.z = 0;
-				camera.ang = 3 * PI / 2;
-				camera.vang = 0;
-			}
-			else {
-				camera.x = 2;
-				camera.y = 2;
-				camera.z = 0;
-				camera.ang = 0;
-				camera.vang = 0;
-			}
-
-			// shoparea
-			if (shoparea)
-				free(shoparea);
-			shoparea = (bool *)malloc(sizeof(bool)*destmap->width*destmap->height);
-			for (x = 0; x < destmap->width; x++)
-				for (y = 0; y < destmap->height; y++)
-					shoparea[y + x*destmap->height] = FALSE;
-		}
-
-		for (c = 0; c < 512; c++)
-			keystatus[c] = 0;
-
-		return numentities;
 	}
 	else {
+		printlog("warning: failed to open file '%s' for map loading!\n", filename);
+		if (destmap == &map && game) {
+			printlog("error: main map failed to load, aborting.\n");
+			mainloop = 0;
+		}
+		free(filename);
 		return -1;
 	}
+	fread(valid_data, sizeof(char), strlen("BARONY"), fp);
+	if (strncmp(valid_data, "BARONY", strlen("BARONY"))) {
+		printlog("warning: file '%s' is an invalid map file.\n", filename);
+		fclose(fp);
+		if (destmap == &map && game) {
+			printlog("error: main map failed to load, aborting.\n");
+			mainloop = 0;
+		}
+		free(filename);
+		return -1;
+	}
+	list_FreeAll(entlist);
+	if (destmap == &map) {
+		// remove old lights
+		list_FreeAll(&light_l);
+	}
+	if (destmap->tiles != NULL)
+		free(destmap->tiles);
+	fread(destmap->name, sizeof(char), 32, fp); // map name
+	fread(destmap->author, sizeof(char), 32, fp); // map author
+	fread(&destmap->width, sizeof(Uint32), 1, fp); // map width
+	fread(&destmap->height, sizeof(Uint32), 1, fp); // map height
+	destmap->tiles = (Sint32 *)malloc(sizeof(Sint32)*destmap->width*destmap->height*MAPLAYERS);
+	fread(destmap->tiles, sizeof(Sint32), destmap->width*destmap->height*MAPLAYERS, fp);
+	fread(&numentities, sizeof(Uint32), 1, fp); // number of entities on the map
+	for (c = 0; c < numentities; c++) {
+		fread(&sprite, sizeof(Sint32), 1, fp);
+		entity = newEntity(sprite, 0, entlist);
+		fread(&x, sizeof(Sint32), 1, fp);
+		fread(&y, sizeof(Sint32), 1, fp);
+		entity->x = x;
+		entity->y = y;
+	}
+	free(filename);
+	fclose(fp);
+
+	if (destmap == &map) {
+		nummonsters = 0;
+		minotaurlevel = 0;
+		if (strcmp(oldmapname, map.name))
+			levelmusicplaying = FALSE;
+
+		// create new lightmap
+		if (lightmap != NULL)
+			free(lightmap);
+		lightmap = (int *)malloc(sizeof(Sint32)*destmap->width*destmap->height);
+		if (strncmp(map.name, "Hell", 4)) {
+			for (c = 0; c < destmap->width*destmap->height; c++)
+				lightmap[c] = 0;
+		}
+		else {
+			for (c = 0; c < destmap->width*destmap->height; c++)
+				lightmap[c] = 32;
+		}
+
+		// create a new vismap
+		if (vismap != NULL)
+			free(vismap);
+		vismap = (bool *)calloc(destmap->width*destmap->height, sizeof(bool));
+
+		// reset minimap
+		for (x = 0; x < 64; x++)
+			for (y = 0; y < 64; y++)
+				minimap[y][x] = 0;
+
+		// reset camera
+		if (game) {
+			camera.x = -32;
+			camera.y = -32;
+			camera.z = 0;
+			camera.ang = 3 * PI / 2;
+			camera.vang = 0;
+		}
+		else {
+			camera.x = 2;
+			camera.y = 2;
+			camera.z = 0;
+			camera.ang = 0;
+			camera.vang = 0;
+		}
+
+		// shoparea
+		if (shoparea)
+			free(shoparea);
+		shoparea = (bool *)malloc(sizeof(bool)*destmap->width*destmap->height);
+		for (x = 0; x < destmap->width; x++)
+			for (y = 0; y < destmap->height; y++)
+				shoparea[y + x*destmap->height] = FALSE;
+	}
+
+	for (c = 0; c < 512; c++)
+		keystatus[c] = 0;
+
+	return numentities;
 }
 
 /*-------------------------------------------------------------------------------
