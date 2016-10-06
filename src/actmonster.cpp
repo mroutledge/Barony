@@ -28,54 +28,56 @@ float limbs[NUMMONSTERS][20][3];
 
 // determines which monsters fight which
 bool swornenemies[NUMMONSTERS][NUMMONSTERS] = {
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // NOTHING
-	{ 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0 }, // HUMAN
-	{ 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, // RAT
-	{ 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0 }, // EVIL RAT
-	{ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0 }, // GOBLIN
-	{ 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 }, // SLIME
-	{ 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0 }, // TROLL
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // OCTOPUS
-	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1 }, // SPIDER
-	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 }, // GHOUL
-	{ 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0 }, // SKELETON
-	{ 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0 }, // SCORPION
-	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 }, // IMP
-	{ 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // BUGBEAR
-	{ 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0 }, // GNOME
-	{ 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 }, // DEMON
-	{ 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 }, // SUCCUBUS
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // MIMIC
-	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 }, // LICH
-	{ 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0 }, // MINOTAUR
-	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1 }, // DEVIL
-	{ 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0 }  // SHOPKEEPER
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // NOTHING
+	{ 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1 }, // HUMAN
+	{ 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1 }, // RAT
+	{ 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0 }, // EVIL RAT
+	{ 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1 }, // GOBLIN
+	{ 0, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0 }, // SLIME
+	{ 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1 }, // TROLL
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }, // OCTOPUS
+	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1 }, // SPIDER
+	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1 }, // GHOUL
+	{ 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 1 }, // SKELETON
+	{ 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1 }, // SCORPION
+	{ 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // IMP
+	{ 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }, // BUGBEAR
+	{ 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 1 }, // GNOME
+	{ 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // DEMON
+	{ 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 ,0 }, // SUCCUBUS
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // MIMIC
+	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1 }, // LICH
+	{ 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0 }, // MINOTAUR
+	{ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0 }, // DEVIL
+	{ 0, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1 }, // SHOPKEEPER
+	{ 0, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0 }  // Cthulhu Spawn
 };
 
 // determines which monsters come to the aid of other monsters
 bool monsterally[NUMMONSTERS][NUMMONSTERS] = {
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // NOTHING
-	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, // HUMAN
-	{ 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // RAT
-	{ 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // EVIL RAT
-	{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // GOBLIN
-	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SLIME
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 }, // TROLL
-	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // OCTOPUS
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SPIDER
-	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // GHOUL
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // SKELETON
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SCORPION
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // IMP
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // BUGBEAR
-	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0 }, // GNOME
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0 }, // DEMON
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0 }, // SUCCUBUS
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // MIMIC
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // LICH
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0 }, // MINOTAUR
-	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0 }, // DEVIL
-	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1 }  // SHOPKEEPER
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // NOTHING
+	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 }, // HUMAN
+	{ 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // RAT
+	{ 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // EVIL RAT
+	{ 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // GOBLIN
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SLIME
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 }, // TROLL
+	{ 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // OCTOPUS
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SPIDER
+	{ 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, // GHOUL
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, // SKELETON
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // SCORPION
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // IMP
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // BUGBEAR
+	{ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0 }, // GNOME
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0 }, // DEMON
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0 }, // SUCCUBUS
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // MIMIC
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 }, // LICH
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 }, // MINOTAUR
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0 }, // DEVIL
+	{ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0 }, // SHOPKEEPER
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }  // SPAWN
 };
 
 // monster sight ranges
@@ -101,7 +103,8 @@ double sightranges[NUMMONSTERS] = {
 	512,  // LICH
 	512,  // MINOTAUR
 	1024, // DEVIL
-	256   // SHOPKEEPER
+	256,  // SHOPKEEPER
+	512   //SPAWN
 };
 
 /*-------------------------------------------------------------------------------
@@ -157,48 +160,46 @@ Entity *summonMonster(Monster creature, long x, long y) {
 	}
 
 	// Find a free tile next to the source and then spawn it there.
-	if (multiplayer != CLIENT) {
-		if (entityInsideSomething(entity)) {
-			do {
-				entity->x = x;
-				entity->y = y - 16;
-				if (!entityInsideSomething(entity))
-					break; // north
-				entity->x = x;
-				entity->y = y + 16;
-				if (!entityInsideSomething(entity))
-					break; // south
-				entity->x = x - 16;
-				entity->y = y;
-				if (!entityInsideSomething(entity))
-					break; // west
-				entity->x = x + 16;
-				entity->y = y;
-				if (!entityInsideSomething(entity))
-					break; // east
-				entity->x = x + 16;
-				entity->y = y - 16;
-				if (!entityInsideSomething(entity))
-					break; // northeast
-				entity->x = x + 16;
-				entity->y = y + 16;
-				if (!entityInsideSomething(entity))
-					break; // southeast
-				entity->x = x - 16;
-				entity->y = y - 16;
-				if (!entityInsideSomething(entity))
-					break; // northwest
-				entity->x = x - 16;
-				entity->y = y + 16;
-				if (!entityInsideSomething(entity))
-					break; // southwest
+	if (multiplayer != CLIENT && entityInsideSomething(entity)) {
+		do {
+			entity->x = x;
+			entity->y = y - 16;
+			if (!entityInsideSomething(entity))
+				break; // north
+			entity->x = x;
+			entity->y = y + 16;
+			if (!entityInsideSomething(entity))
+				break; // south
+			entity->x = x - 16;
+			entity->y = y;
+			if (!entityInsideSomething(entity))
+				break; // west
+			entity->x = x + 16;
+			entity->y = y;
+			if (!entityInsideSomething(entity))
+				break; // east
+			entity->x = x + 16;
+			entity->y = y - 16;
+			if (!entityInsideSomething(entity))
+				break; // northeast
+			entity->x = x + 16;
+			entity->y = y + 16;
+			if (!entityInsideSomething(entity))
+				break; // southeast
+			entity->x = x - 16;
+			entity->y = y - 16;
+			if (!entityInsideSomething(entity))
+				break; // northwest
+			entity->x = x - 16;
+			entity->y = y + 16;
+			if (!entityInsideSomething(entity))
+				break; // southwest
 
-				// we can't have monsters in walls...
-				list_RemoveNode(entity->mynode);
-				entity = NULL;
-				break;
-			} while (1);
-		}
+			 // we can't have monsters in walls...
+			list_RemoveNode(entity->mynode);
+			entity = NULL;
+			break;
+		} while (true);
 	}
 
 	if (entity) {
@@ -288,7 +289,6 @@ Entity *summonMonster(Monster creature, long x, long y) {
 			entity->focalz = limbs[LICH][0][2]; // 0
 			entity->z = -2;
 			entity->yaw = PI;
-			entity->sprite = 274;
 			entity->skill[29] = 120;
 			break;
 		case CREATURE_IMP:
@@ -312,6 +312,11 @@ Entity *summonMonster(Monster creature, long x, long y) {
 			entity->sizey = 20;
 			entity->yaw = PI;
 			break;
+		case SPAWN:
+			entity->focalx = limbs[SPAWN][0][0]; // 0
+			entity->focaly = limbs[SPAWN][0][1]; // 0
+			entity->focalz = limbs[SPAWN][0][2]; // 0
+			break;
 		default:
 			//Spawn a potato.
 			list_RemoveNode(entity->mynode);
@@ -320,6 +325,7 @@ Entity *summonMonster(Monster creature, long x, long y) {
 		}
 		if (entity)
 			nummonsters++;
+
 		if (multiplayer == SERVER) {
 			strcpy((char *)net_packet->data, "SUMM");
 			SDLNet_Write32((Uint32)creature, &net_packet->data[4]);
@@ -328,8 +334,7 @@ Entity *summonMonster(Monster creature, long x, long y) {
 			SDLNet_Write32(entity->uid, &net_packet->data[16]);
 			net_packet->len = 20;
 
-			int c;
-			for (c = 0; c < MAXPLAYERS; c++) {
+			for (int c = 0; c < MAXPLAYERS; c++) {
 				if (client_disconnected[c])
 					continue;
 				net_packet->address.host = net_clients[c - 1].host;
@@ -517,6 +522,9 @@ void actMonster(Entity *my) {
 			else if (my->sprite == 304) { // devil torso
 				initDevil(my, NULL);
 			}
+			else if (my->sprite == 415) {
+				initSpawn(my, NULL);
+			}
 		}
 		else {
 			my->flags[BURNABLE] = TRUE;
@@ -676,6 +684,9 @@ void actMonster(Entity *my) {
 				devilstate = 0;
 				devilacted = 0;
 				initDevil(my, myStats);
+				break;
+			case SPAWN:
+				initSpawn(my, myStats);
 				break;
 			default: break; //This should never be reached.
 			}
@@ -974,6 +985,9 @@ void actMonster(Entity *my) {
 			serverUpdateEntitySkill(my, 8);
 			serverUpdateEntitySkill(my, 9);
 			serverUpdateEntitySkill(my, 10);
+			break;
+		case SPAWN:
+			spawnDie(my);
 			break;
 		default: break; //This should never be reached.
 		}
@@ -3081,6 +3095,9 @@ void actMonster(Entity *my) {
 		}
 		else if (myStats->type == DEVIL) {
 			devilMoveBodyparts(my, myStats, sqrt(MONSTER_VELX*MONSTER_VELX + MONSTER_VELY*MONSTER_VELY));
+		}
+		else if (myStats->type == SPAWN) {
+			spawnAnimate(my, sqrt(MONSTER_VELX*MONSTER_VELX + MONSTER_VELY*MONSTER_VELY));
 		}
 	}
 }

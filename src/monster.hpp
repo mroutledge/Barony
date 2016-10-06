@@ -11,7 +11,7 @@
 
 #pragma once
 
-static char monstertypename[][11] = {
+static char monstertypename[][12] = {
 	"nothing",
 	"human",
 	"rat",
@@ -33,7 +33,8 @@ static char monstertypename[][11] = {
 	"lich",
 	"minotaur",
 	"devil",
-	"shopkeeper"
+	"shopkeeper",
+	"cspawn"
 };
 
 // body part focal points
@@ -48,6 +49,7 @@ static char gibtype[NUMMONSTERS] = {
 	1,
 	1,
 	1,
+	2,
 	3,
 	1,
 	1,
@@ -64,7 +66,8 @@ static char gibtype[NUMMONSTERS] = {
 	2,
 	1,
 	1,
-	1
+	1,
+	2
 };
 
 // columns go like this:
@@ -92,7 +95,8 @@ static double damagetables[NUMMONSTERS][6] = {
 	{ 2.5, 2.5, 2.5, 2.5, 1.f, 1.f }, // lich
 	{ 1.f, 1.f, 1.f, 1.f, 1.f, 1.f }, // minotaur
 	{ 2.f, 2.f, 2.f, 2.f, 1.f, 1.f }, // devil
-	{ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 }  // shopkeeper
+	{ 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 }, // shopkeeper
+	{ 0.8, 0.8, 0.8, 0.6, 0.5, 0.5 }  // spawn
 };
 
 #define WAIT_FOLLOWDIST 48
@@ -150,6 +154,7 @@ void initMinotaur(Entity *my, stat_t *myStats);
 void initGhoul(Entity *my, stat_t *myStats);
 void initDemon(Entity *my, stat_t *myStats);
 void initSpider(Entity *my, stat_t *myStats);
+void initSpawn(Entity *my, stat_t *myStats);
 void initLich(Entity *my, stat_t *myStats);
 void initImp(Entity *my, stat_t *myStats);
 void initGnome(Entity *my, stat_t *myStats);
@@ -187,6 +192,7 @@ void minotaurDie(Entity *my);
 void ghoulDie(Entity *my);
 void demonDie(Entity *my);
 void spiderDie(Entity *my);
+void spawnDie(Entity *my);
 void lichDie(Entity *my);
 void impDie(Entity *my);
 void gnomeDie(Entity *my);
@@ -207,6 +213,7 @@ void minotaurMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void ghoulMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void demonMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void spiderMoveBodyparts(Entity *my, stat_t *myStats, double dist);
+void spawnAnimate(Entity *my, double dist);
 void lichAnimate(Entity *my, double dist);
 void impMoveBodyparts(Entity *my, stat_t *myStats, double dist);
 void gnomeMoveBodyparts(Entity *my, stat_t *myStats, double dist);

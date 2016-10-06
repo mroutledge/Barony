@@ -35,6 +35,8 @@ void initSpider(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
+		myStats->lookupKey = "spider";
+		myStats->hitType = BITE;
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

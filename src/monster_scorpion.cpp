@@ -35,6 +35,7 @@ void initScorpion(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
+		myStats->hitType = STING;
 		myStats->lookupKey = "scorpion";
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;

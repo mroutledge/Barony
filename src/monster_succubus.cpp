@@ -38,6 +38,7 @@ void initSuccubus(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = FEMALE;
 		myStats->appearance = rand();
+		myStats->hitType = SLAP;
 		myStats->lookupKey = "succubus";
 		if (rand() % 50 || my->flags[USERFLAG2]) {
 			myStats->DEX = 3;

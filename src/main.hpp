@@ -571,6 +571,22 @@ std::string readTextFile(char *filename);
 std::map<std::string, std::string> mapFile(char *filepath);
 std::map<std::string, char *> mapFileToChar(char *filepath);
 
+typedef enum {
+	HIT,
+	BITE,
+	SLIMED,
+	THUMP,
+	WRESTLE,
+	STING,
+	SCRATCH,
+	MAUL,
+	SLAP,
+	POUND,
+	STRIKE
+} MonsterHitType;
+
+extern char *hitTypeString(MonsterHitType hitType);
+
 char *readFile(char *filename);
 
 list_t *directoryContents(char *directory);

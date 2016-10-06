@@ -38,6 +38,7 @@ void initGhoul(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
+		myStats->hitType = HIT;
 		myStats->lookupKey = "ghoul";
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

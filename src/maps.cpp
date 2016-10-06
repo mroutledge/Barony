@@ -45,17 +45,17 @@ int monsterCurve(int level) {
 			return EVILRAT;
 		case 6:
 		case 7:
-			return SKELETON;
+			return SPAWN;
 		case 8:
 			if (level >= 3)
 				return SPIDER;
 			else
-				return EVILRAT;
+				return SKELETON;
 		case 9:
 			if (level >= 3)
 				return TROLL;
 			else
-				return EVILRAT;
+				return SPAWN;
 			break;
 		}
 	}
@@ -738,7 +738,7 @@ int generateDungeon(char *levelset, Uint32 seed) {
 			//printlog("pickedlocation: %d\n",pickedlocation);
 			//printlog("numpossiblelocations: %d\n",numpossiblelocations);
 			x = 0; y = 0;
-			while (1) {
+			while (true) {
 				if (possiblelocations[y + x*map.height] == TRUE) {
 					i++;
 					if (i == pickedlocation)
@@ -1606,6 +1606,12 @@ void assignActions(map_t *map) {
 				entity->sizex = 20;
 				entity->sizey = 20;
 				entity->yaw = PI;
+				break;
+			case SPAWN:
+				entity->focalx = limbs[SPAWN][0][0]; // 0
+				entity->focaly = limbs[SPAWN][0][1]; // 0
+				entity->focalz = limbs[SPAWN][0][2]; // 0
+				entity->z = 1;
 				break;
 			default:
 				break;

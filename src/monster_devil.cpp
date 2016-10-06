@@ -38,6 +38,7 @@ void initDevil(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
+		myStats->hitType = POUND;
 		myStats->lookupKey = "devil";
 		strcpy(myStats->name, "Baphomet");
 		myStats->inventory.first = NULL;

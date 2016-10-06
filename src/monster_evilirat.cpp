@@ -37,6 +37,7 @@ void initEvilRat(Entity *my, stat_t *myStats) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
 		myStats->lookupKey = "evilrat";
+		myStats->hitType = BITE;
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

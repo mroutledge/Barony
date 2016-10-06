@@ -349,3 +349,31 @@ void printlog(char *str, ...) {
 	fprintf(stderr, "[%s] %s", buffer, newstr);
 	fflush(stderr);
 }
+
+char *hitTypeString(MonsterHitType hitType) {
+	switch (hitType)
+	{
+	case HIT:
+		return language[133];
+	case BITE:
+		return language[134];
+	case SLIMED:
+		return language[136];
+	case THUMP:
+		return language[137];
+	case WRESTLE:
+		return language[138];
+	case STING:
+		return language[142];
+	case SCRATCH:
+		return language[143];
+	case MAUL:
+		return language[146];
+	case SLAP:
+		return language[147];
+	case POUND:
+		return language[150];
+	case STRIKE:
+		return language[145];
+	}
+}

@@ -40,6 +40,7 @@ void initMinotaur(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = MALE;
 		myStats->appearance = rand();
+		myStats->hitType = POUND;
 		myStats->lookupKey = "minotaur";
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;

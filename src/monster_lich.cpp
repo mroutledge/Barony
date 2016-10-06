@@ -20,8 +20,6 @@
 #include "collision.hpp"
 
 void initLich(Entity *my, stat_t *myStats) {
-	int c;
-
 	my->flags[UPDATENEEDED] = TRUE;
 	my->flags[INVISIBLE] = FALSE;
 
@@ -35,6 +33,7 @@ void initLich(Entity *my, stat_t *myStats) {
 	if (multiplayer != CLIENT && !MONSTER_INIT) {
 		myStats->sex = MALE;
 		myStats->appearance = rand();
+		myStats->hitType = HIT;
 		myStats->lookupKey = "lich";
 		strcpy(myStats->name, "Baron Herx");
 		myStats->inventory.first = NULL;
@@ -54,7 +53,7 @@ void initLich(Entity *my, stat_t *myStats) {
 		myStats->HUNGER = 900;
 		myStats->leader_uid = 0;
 		myStats->FOLLOWERS.first = NULL; myStats->FOLLOWERS.last = NULL;
-		for (c = 0; c < std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
+		for (int c = 0; c < std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
 			if (c < NUMPROFICIENCIES)
 				myStats->PROFICIENCIES[c] = 0;
 			if (c < NUMEFFECTS)

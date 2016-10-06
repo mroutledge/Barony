@@ -40,7 +40,8 @@ typedef enum {
 	LICH,
 	MINOTAUR,
 	DEVIL,
-	SHOPKEEPER
+	SHOPKEEPER,
+	SPAWN
 } Monster;
 #define NUMMONSTERS 23
 extern int kills[NUMMONSTERS];
@@ -91,6 +92,7 @@ typedef enum {
 // character stat structure
 struct stat_t {
 	Monster type;
+	MonsterHitType hitType;
 	sex_t sex;
 	Uint32 appearance;
 	char name[128];

@@ -39,6 +39,7 @@ void initHuman(Entity *my, stat_t *myStats) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand() % NUMAPPEARANCES;
 		myStats->lookupKey = "human";
+		myStats->hitType = HIT;
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;

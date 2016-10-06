@@ -37,6 +37,7 @@ void initRat(Entity *my, stat_t *myStats) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
 		myStats->lookupKey = "rat";
+		myStats->hitType = BITE;
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;
@@ -119,8 +120,7 @@ void ratAnimate(Entity *my, double dist) {
 }
 
 void ratDie(Entity *my) {
-	int c = 0;
-	for (c = 0; c < 5; c++) {
+	for (int c = 0; c < 5; c++) {
 		Entity *gib = spawnGib(my);
 		serverSpawnGibForClient(gib);
 	}

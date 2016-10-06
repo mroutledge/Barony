@@ -20,7 +20,6 @@
 #include "collision.hpp"
 
 void initGoblin(Entity *my, stat_t *myStats) {
-	int c;
 	node_t *node;
 
 	my->sprite = 180; //Goblin head model
@@ -40,6 +39,7 @@ void initGoblin(Entity *my, stat_t *myStats) {
 		myStats->sex = static_cast<sex_t>(rand() % 2);
 		myStats->appearance = rand();
 		myStats->lookupKey = "goblin";
+		myStats->hitType = HIT;
 		strcpy(myStats->name, "");
 		myStats->inventory.first = NULL;
 		myStats->inventory.last = NULL;
@@ -64,7 +64,7 @@ void initGoblin(Entity *my, stat_t *myStats) {
 		if (!myStats->leader_uid)
 			myStats->leader_uid = 0;
 		myStats->FOLLOWERS.first = NULL; myStats->FOLLOWERS.last = NULL;
-		for (c = 0; c < std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
+		for (int c = 0; c < std::max(NUMPROFICIENCIES, NUMEFFECTS); c++) {
 			if (c < NUMPROFICIENCIES)
 				myStats->PROFICIENCIES[c] = 0;
 			if (c < NUMEFFECTS)
@@ -401,8 +401,7 @@ void initGoblin(Entity *my, stat_t *myStats) {
 		myStats->weapon = newItem(ARTIFACT_MACE, EXCELLENT, 1, 1, rand(), TRUE, NULL);
 		myStats->helmet = newItem(HAT_JESTER, SERVICABLE, 3 + rand() % 3, 1, 0, FALSE, NULL);
 
-		int c;
-		for (c = 0; c < 3; c++) {
+		for (int c = 0; c < 3; c++) {
 			Entity *entity = summonMonster(GOBLIN, my->x, my->y);
 			if (entity)
 				entity->parent = my->uid;
