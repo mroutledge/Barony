@@ -2436,7 +2436,7 @@ void handleMainMenu(bool mode) {
 
 			// disable cheats
 			noclip = FALSE;
-			godmode = FALSE;
+			godmode = TRUE;
 			buddhamode = FALSE;
 			everybodyfriendly = FALSE;
 

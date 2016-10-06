@@ -65,14 +65,6 @@ void Entity::updateCircuitNeighbors() {
 	}
 }
 
-
-
-
-
-
-
-
-
 //I don't want an explicit mechanism entity.
 //Rather, I want normal object entities, such as traps and whatever else will interact with circuits to have the variables necessary to function as a mechanism.
 //Hence, no actMechanism(). Each individual entity will handle that in its own act() function.
