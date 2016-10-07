@@ -51,6 +51,10 @@ void statConstructor(stat_t *stat) {
 	stat->HUNGER = 800;
 	stat->defending = FALSE;
 
+	stat->lookupKey = "slime";
+	stat->hitType = SLIMED;
+
+
 	int c;
 	for (c = 0; c < NUMPROFICIENCIES; c++) {
 		stat->PROFICIENCIES[c] = 0;
@@ -333,6 +337,9 @@ stat_t *copyStats(stat_t *stat) {
 	newStat->HP = stat->HP;
 	newStat->MAXHP = stat->MAXHP;
 	newStat->OLDHP = stat->OLDHP;
+	
+	newStat->lookupKey = stat->lookupKey;
+	newStat->hitType = stat->hitType;
 
 	newStat->MP = stat->MP;
 	newStat->MAXMP = stat->MAXMP;
