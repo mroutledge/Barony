@@ -29,7 +29,7 @@ light_t *lightSphereShadow(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) 
 	double a, b;
 	Sint32 dx, dy;
 	Sint32 dxabs, dyabs;
-	bool wallhit;
+	bool wallhit = TRUE;
 	int index, z;
 
 	if (intensity == 0)
@@ -47,7 +47,7 @@ light_t *lightSphereShadow(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) 
 				a = dyabs*.5;
 				b = dxabs*.5;
 				u2 = u; v2 = v;
-				wallhit = TRUE;
+
 				index = v*MAPLAYERS + u*MAPLAYERS*map.height;
 				for (z = 0; z < MAPLAYERS; z++) {
 					if (!map.tiles[index + z]) {
@@ -55,7 +55,7 @@ light_t *lightSphereShadow(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) 
 						break;
 					}
 				}
-				if (wallhit == TRUE)
+				if (wallhit)
 					continue;
 				if (dxabs >= dyabs) { // the line is more horizontal than vertical
 					for (i = 0; i < dxabs; i++) {
@@ -89,7 +89,7 @@ light_t *lightSphereShadow(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) 
 						}
 					}
 				}
-				if (wallhit == FALSE || (wallhit == TRUE && u2 == u && v2 == v)) {
+				if (!wallhit || (wallhit && u2 == u && v2 == v)) {
 					light->tiles[(dy + radius) + (dx + radius)*(radius * 2 + 1)] = intensity - intensity*std::min(sqrt(dx*dx + dy*dy) / radius, 1.0);
 					lightmap[v + u*map.height] += light->tiles[(dy + radius) + (dx + radius)*(radius * 2 + 1)];
 				}
@@ -133,6 +133,7 @@ light_t *lightSphere(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) {
 	return light;
 }
 
+
 int determineLightType(int spriteNumber) {
 	if (spriteNumber == 93) { // torch
 		return 6;
@@ -144,9 +145,7 @@ int determineLightType(int spriteNumber) {
 	return 0;
 }
 
-light_t *CreateTorch(double x, double y, int sprite) {
-	int torch = determineLightType(sprite);
-
+light_t *CreateTorch(double x, double y, int torch) {
 	if (torch != 0) {
 		double xResult = x / 16;
 		double yResult = y / 16;

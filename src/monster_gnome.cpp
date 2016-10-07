@@ -354,7 +354,7 @@ void actGnomeLimb(Entity *my) {
 	}
 
 	if (!my->flags[INVISIBLE]) {
-		my->light = CreateTorch(my->x, my->y, my->sprite);
+		my->light = CreateTorch(my->x, my->y, determineLightType(my->sprite));
 	}
 }
 

@@ -960,7 +960,7 @@ void actPlayer(Entity *my) {
 		my->light = NULL;
 	}
 	if (PLAYER_TORCH && my->light == NULL) {
-		my->light = lightSphereShadow(my->x / 16, my->y / 16, PLAYER_TORCH, 50 + 15 * PLAYER_TORCH);
+		my->light = CreateTorch( my->x, my->y, PLAYER_TORCH);
 	}
 
 	// server controls players primarily
@@ -1035,8 +1035,8 @@ void actPlayer(Entity *my) {
 						spell->magic_effects_node = NULL;
 						list_RemoveNode(oldnode);
 					}
-					int c;
-					for (c = 0; c < MAXPLAYERS; c++) {
+
+					for (int c = 0; c < MAXPLAYERS; c++) {
 						if (client_disconnected[c])
 							continue;
 						char whatever[256];
@@ -1123,71 +1123,61 @@ void actPlayer(Entity *my) {
 						my->y = ((int)(my->y / 16)) * 16 + 8;
 						item = stats[PLAYER_NUM].helmet;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].breastplate;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].gloves;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].shoes;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].shield;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].weapon;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].cloak;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].amulet;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].ring;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
 						item = stats[PLAYER_NUM].mask;
 						if (item) {
-							int c = item->count;
-							for (c = item->count; c > 0; c--) {
+							for (int c = item->count; c > 0; c--) {
 								dropItemMonster(item, my, &stats[PLAYER_NUM]);
 							}
 						}
@@ -1430,7 +1420,7 @@ void actPlayer(Entity *my) {
 		// PLAYER_VEL* skills updated by messages sent to server from client
 
 		// move (dead reckoning)
-		if (noclip == FALSE) {
+		if (!noclip) {
 			dist = clipMove(&my->x, &my->y, PLAYER_VELX, PLAYER_VELY, my);
 
 			// bumping into monsters disturbs them
@@ -2199,7 +2189,7 @@ void actPlayer(Entity *my) {
 	else
 		PLAYER_ATTACKTIME = 0;
 
-	if (PLAYER_NUM == clientnum && intro == FALSE) {
+	if (PLAYER_NUM == clientnum && !intro) {
 		// camera
 		if (!PLAYER_DEBUGCAM) {
 			camera.x = my->x / 16.0;
