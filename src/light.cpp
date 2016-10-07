@@ -132,3 +132,26 @@ light_t *lightSphere(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity) {
 	}
 	return light;
 }
+
+int determineLightType(int spriteNumber) {
+	if (spriteNumber == 93) { // torch
+		return 6;
+	}
+	else if (spriteNumber == 94) { // lantern
+		return 9;
+	}
+
+	return 0;
+}
+
+light_t *CreateTorch(double x, double y, int sprite) {
+	int torch = determineLightType(sprite);
+
+	if (torch != 0) {
+		double xResult = x / 16;
+		double yResult = y / 16;
+		return lightSphereShadow((signed int)xResult, (signed int)yResult, torch, 50 + 15 * torch);
+	}
+
+	return NULL;
+}

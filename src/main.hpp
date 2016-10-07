@@ -478,6 +478,8 @@ node_t *list_Node(list_t *list, int index);
 // function prototypes for light.c:
 light_t *lightSphereShadow(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity);
 light_t *lightSphere(Sint32 x, Sint32 y, Sint32 radius, Sint32 intensity);
+int determineLightType(int sprintNumber);
+light_t *CreateTorch(double x, double y, int spriteNumber);
 
 // function prototypes for objects.c:
 void defaultDeconstructor(void *data);

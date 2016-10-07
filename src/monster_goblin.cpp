@@ -410,8 +410,6 @@ void initGoblin(Entity *my, stat_t *myStats) {
 }
 
 void actGoblinLimb(Entity *my) {
-	int i;
-
 	Entity *parent = NULL;
 	if ((parent = uidToEntity(my->skill[2])) == NULL) {
 		list_RemoveNode(my->mynode);
@@ -424,7 +422,7 @@ void actGoblinLimb(Entity *my) {
 	}
 
 	if (multiplayer != CLIENT) {
-		for (i = 0; i < MAXPLAYERS; i++) {
+		for (int i = 0; i < MAXPLAYERS; i++) {
 			if (inrange[i]) {
 				if (i == 0 && selectedEntity == my) {
 					parent->skill[13] = i + 1;
@@ -436,17 +434,8 @@ void actGoblinLimb(Entity *my) {
 		}
 	}
 
-	int torch = 0;
-	if (my->flags[INVISIBLE] == FALSE) {
-		if (my->sprite == 93) { // torch
-			torch = 6;
-		}
-		else if (my->sprite == 94) { // lantern
-			torch = 9;
-		}
-	}
-	if (torch != 0) {
-		my->light = lightSphereShadow(my->x / 16, my->y / 16, torch, 50 + 15 * torch);
+	if (!my->flags[INVISIBLE]) {
+		my->light = CreateTorch(my->x, my->y, my->sprite);
 	}
 }
 

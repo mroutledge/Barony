@@ -402,17 +402,8 @@ void actSkeletonLimb(Entity *my) {
 		}
 	}
 
-	int torch = 0;
-	if (my->flags[INVISIBLE] == FALSE) {
-		if (my->sprite == 93) { // torch
-			torch = 6;
-		}
-		else if (my->sprite == 94) { // lantern
-			torch = 9;
-		}
-	}
-	if (torch != 0) {
-		my->light = lightSphereShadow(my->x / 16, my->y / 16, torch, 50 + 15 * torch);
+	if (!my->flags[INVISIBLE]) {
+		my->light = CreateTorch(my->x, my->y, my->sprite);
 	}
 }
 
